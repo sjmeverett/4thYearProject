@@ -1,6 +1,7 @@
 
 package machinelearning.tests;
 
+import machinelearning.MinimisationAlgorithm;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import machinelearning.GradientDescent;
 import machinelearning.LogisticRegressionCostFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -91,6 +93,34 @@ public class LogisticRegressionTest
         };
         
         assertArrayEquals(expectedGradient, gradient, DELTA);
+    }
+    
+    @Test
+    public void gradientDescentTest()
+    {
+        MinimisationAlgorithm min = new GradientDescent(1000, 1);
+        min.minimise(theta, f);
+        
+        int correct = 0;
+        
+        for (int row = 0; row < X.length; row++)
+        {
+            double guess = 0;
+            
+            for (int column = 0; column < theta.length; column++)
+            {
+                guess += X[row][column] * theta[column];
+            }
+            
+            if (guess >= 0.5 && y[row] == 1)
+                correct++;
+            else if (guess < 0.5 && y[row] == 0)
+                correct++;
+        }
+        
+        //we're using a less effective minimisation function, so allow a
+        //reasonable margin for error
+        assertEquals(83, ((double)correct / X.length) * 100, 5);
     }
     
     

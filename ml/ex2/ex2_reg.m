@@ -68,8 +68,6 @@ lambda = 1;
 [cost, grad] = costFunctionReg(initial_theta, X, y, lambda);
 
 fprintf('Cost at initial theta (zeros): %f\n', cost);
-fprintf('Gradient at initial theta (zeros) %d:', size(grad, 1));
-disp(grad);
 
 fprintf('\nProgram paused. Press enter to continue.\n');
 pause;
