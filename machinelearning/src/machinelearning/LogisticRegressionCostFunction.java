@@ -29,7 +29,7 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
         double[] h = h(X, theta);
                 
         //J = (1 / m) * sum(cost(h(x),y)) + lambda / (2 * m) * sum(theta ^ 2)
-        return (1 / m) * sumcost(y, h) + lambda / (2 * m) * sumSquared(theta);
+        return (1.0 / m) * sumcost(y, h) + lambda / (2.0 * m) * sumSquared(theta);
     }
 
     
@@ -37,7 +37,6 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
     public double[] getGradient(double[] theta)
     {
         int m = y.length;
-        double mr = 1.0 / m;
         double[] h = h(X, theta);
         
         //grad = (1 / m) * (X' * (h - y) + lambda * [0; theta(2:end)]);
@@ -57,7 +56,7 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
         {
             for (int col = 0; col < X.length; col++)
             {
-                grad[col] += Xt[row][col] * error[col];
+                grad[row] += Xt[row][col] * error[col];
             }
             
             if (row > 0)
@@ -86,8 +85,10 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
         {
             for (int col = 0; col < theta.length; col++)
             {
-                h[row] += sigmoid(X[row][col] * theta[col]);
+                h[row] += X[row][col] * theta[col];
             }
+            
+            h[row] = sigmoid(h[row]);
         }
         
         return h;
