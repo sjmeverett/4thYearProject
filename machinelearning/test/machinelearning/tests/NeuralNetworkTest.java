@@ -13,8 +13,8 @@ public class NeuralNetworkTest
 	@Test
 	public void test()
 	{
-		int[] layers = {2, 2, 1};
-		NeuralNetwork network = new NeuralNetwork(layers, 1, 1);
+		int[] layers = {2, 1};
+		NeuralNetwork network = new NeuralNetwork(layers, 0.5, 0);
 		
 		double[][] X = {
 			{0, 0},
@@ -25,12 +25,12 @@ public class NeuralNetworkTest
 		
 		double[][] y = {
 			{0},
-			{1},
-			{1},
-			{0}
+			{0},
+			{0},
+			{1}
 		};
 		
-		network.train(X, y, 100);
+		network.train(X, y, 1000);
 		/*
 		assertArrayEquals(new double[] {0}, network.predict(new double[] {0, 0}), DELTA);
 		assertArrayEquals(new double[] {0}, network.predict(new double[] {0, 1}), DELTA);

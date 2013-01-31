@@ -1,5 +1,6 @@
 package machinelearning;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -68,14 +69,20 @@ public class NeuralNetwork
 		
 		for (int i = 0; i < iterations; i++)
 		{
+			gradient = initialiseGradient();
+			
 			for (int example = 0; example < input.length; example++)
 			{
 				nodeValues = forwardPropagation(input[example]);
-				
-				gradient = initialiseGradient();
 				backPropagation(gradient, nodeValues, output[example]);
-				updateWeights(gradient, input.length);
 			}
+			
+			updateWeights(gradient, input.length);
+			
+			for (int j = 0; j < weights.length; j++)
+				for (int k = 0; k < weights[j].length; k++)
+					System.out.print(Arrays.toString(weights[j][k]));
+			System.out.println();
 		}
 	}
 	
@@ -216,7 +223,7 @@ public class NeuralNetwork
 		}
 
 		//other layers
-		for (int i = weights.length - 2; i > 0; i--)
+		for (int i = weights.length - 1; i > 0; i--)
 		{
 			calculateLayerGradient(gradient[i], delta, nodeValues[i]);
 			delta = calculateLayerDelta(weights[i], delta, nodeValues[i]);
@@ -237,11 +244,11 @@ public class NeuralNetwork
 	{
 		double[] layerDelta = new double[layer.length];
 		
-		for (int i = 0; i < successorDelta.length; i++)
+		for (int i = 0; i < layer.length; i++)
 		{
-			for (int j = 0; j < layer.length; j++)
+			for (int j = 0; j < successorDelta.length; j++)
 			{
-				layerDelta[i] += weights[j + 1][i] * successorDelta[j];
+				layerDelta[i] += weights[j][i + 1] * successorDelta[j];
 			}
 			
 			layerDelta[i] *= activationDerivative(layer[i]);
@@ -263,7 +270,7 @@ public class NeuralNetwork
 		{
 			layerGradient[i][0] += delta[i];
 			
-			for (int j = 1; j < layer.length; j++)
+			for (int j = 1; j <= layer.length; j++)
 			{
 				layerGradient[i][j] += delta[i] * layer[j - 1];
 			}
