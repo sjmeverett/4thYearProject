@@ -9,7 +9,7 @@ public class GradientDescent implements MinimisationAlgorithm
 {
     private int iterations;
     private double alpha;
-    private static final double EPSILON = 10e-6;
+    
     
     /**
      * Constructor.

@@ -28,7 +28,7 @@ public class NeuralNetworkTest
 			{0}
 		};
 		
-		network.train(X, y, 1000, 1, 0.1);
+		network.train(X, y, 1000, 1, 0.1, null);
 		
 		assertEquals(0, (int)Math.round(network.predict(new double[] {0, 0})[0]));
 		assertEquals(1, (int)Math.round(network.predict(new double[] {0, 1})[0]));
