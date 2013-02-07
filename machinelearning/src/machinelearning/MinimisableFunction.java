@@ -9,6 +9,5 @@ package machinelearning;
  */
 public interface MinimisableFunction
 {
-    double getValue(double[] at);
-    double[] getGradient(double[] at);
+    double getCost(double[] theta, double[] gradient);
 }

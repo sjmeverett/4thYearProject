@@ -48,7 +48,8 @@ public class LogisticRegressionTest
     public void initialCostTest()
     {
         //expected value taken from ml class tutorial 2
-        double cost = f.getValue(theta);
+    	double[] gradient = new double[theta.length];
+        double cost = f.getCost(theta, gradient);
         double expectedCost = 0.693147;
         
         assertEquals(expectedCost, cost, DELTA);
@@ -59,7 +60,8 @@ public class LogisticRegressionTest
     public void initialGradientTest()
     {
         //expected values taken from ml class tutorial 2
-        double[] gradient = f.getGradient(theta);
+        double[] gradient = new double[theta.length];
+        f.getCost(theta, gradient);
         
         double[] expectedGradient = {
             8.4746e-03,

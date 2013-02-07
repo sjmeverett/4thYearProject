@@ -1,21 +1,24 @@
-package machinelearning;
+package machinelearning.tests.neuralnetworks.v1;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
+import machinelearning.neuralnetworks.v1.NeuralNetwork;
+import machinelearning.neuralnetworks.v1.ProgressCallback;
+
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
 
-public class CharacterTest implements ProgressCallback
+public class CharacterRecognitionTest implements ProgressCallback
 {
 	private int lastPercent = -1;
 	private double[][] X, y, targets;
 	
 	public static void main(String[] args)
 	{
-		CharacterTest test = new CharacterTest();
+		CharacterRecognitionTest test = new CharacterRecognitionTest();
 		//test.nonTrainRun();
 		test.run();
 	}

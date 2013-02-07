@@ -1,10 +1,10 @@
-package machinelearning;
+package machinelearning.neuralnetworks.v1;
 
 import java.util.Random;
 
-public class BasicNeuronLayer implements NeuronLayer
+public class CachingNeuronLayer implements NeuronLayer
 {
-	private static final double EPSILON = 0.5;
+	private static final double EPSILON = 1;
 
 	public double[] input;
 	public double[] output;
@@ -12,26 +12,29 @@ public class BasicNeuronLayer implements NeuronLayer
 	public double[] errors;
 
 	private int size, inputSize;
+	private double[][] delta;
 	
 
-	public BasicNeuronLayer(double[][] weights)
+	public CachingNeuronLayer(double[][] weights)
 	{
 		this.weights = weights;
 
 		size = weights.length;
 		inputSize = weights[0].length - 1;
 
+		delta = new double[size][inputSize + 1];
 		output = new double[size];
 		errors = new double[size];
 	}
 
 
-	public BasicNeuronLayer(int size, int inputSize)
+	public CachingNeuronLayer(int size, int inputSize)
 	{
 		this.size = size;
 		this.inputSize = inputSize;
 
 		weights = new double[size][inputSize + 1];
+		delta = new double[size][inputSize + 1];
 		output = new double[size];
 		errors = new double[size];
 
@@ -47,7 +50,7 @@ public class BasicNeuronLayer implements NeuronLayer
 		{
 			for (int j = 0; j < inputSize + 1; j++)
 			{
-				weights[i][j] = random.nextDouble() * 2 * EPSILON - EPSILON;
+				weights[i][j] = random.nextDouble() * EPSILON;
 			}
 		}
 	}
@@ -61,14 +64,16 @@ public class BasicNeuronLayer implements NeuronLayer
 
 		this.input = input;
 		double sum;
+		double weightsi[];
 
 		for (int i = 0; i < size; i++)
 		{
-			sum = weights[i][0];
+			weightsi = weights[i];
+			sum = weightsi[0];
 
 			for (int j = 0; j < inputSize; j++)
 			{
-				sum += input[j] * weights[i][j + 1];
+				sum += input[j] * weightsi[j + 1];
 			}
 
 			output[i] = activation(sum);
@@ -84,7 +89,7 @@ public class BasicNeuronLayer implements NeuronLayer
 
 		for (int i = 0; i < size; i++)
 		{
-			errors[i] = output[i] - target[i];
+			errors[i] = (target[i] - output[i]) * activationGradient(output[i]);
 		}
 	}
 
@@ -92,9 +97,9 @@ public class BasicNeuronLayer implements NeuronLayer
 	@Override
 	public void calculateError(NeuronLayer successor)
 	{
-		BasicNeuronLayer basicSuccessor = (BasicNeuronLayer)successor;
-		double[] successorErrors = basicSuccessor.errors;
-		double[][] successorWeights = basicSuccessor.weights;
+		CachingNeuronLayer cachingSuccessor = (CachingNeuronLayer)successor;
+		double[] successorErrors = cachingSuccessor.errors;
+		double[][] successorWeights = cachingSuccessor.weights;
 		
 		double sum;
 
@@ -110,34 +115,29 @@ public class BasicNeuronLayer implements NeuronLayer
 			errors[i] = sum * activationGradient(output[i]);
 		}
 	}
-	
-	
-	public void calculateDelta(double[][] delta)
-	{
-		for (int i = 0; i < size; i++)
-		{
-			delta[i][0] += errors[i];
-			
-			for (int j = 1; j <= inputSize; j++)
-			{
-				delta[i][j] += errors[i] * input[j - 1];
-			}
-		}
-	}
 
 
 	@Override
 	public void updateWeights(double learningRate, double lambda, double[][] delta, int m)
 	{
+		double d;
+		double[] weightsi, deltai;
+		double errorsi;
+
 		for (int i = 0; i < size; i++)
 		{
-			weights[i][0] -= learningRate / m * delta[i][0];
-			delta[i][0] = 0;
+			weightsi = weights[i];
+			deltai = delta[i];
+			errorsi = errors[i];
+			
+			weightsi[0] += learningRate * errorsi + lambda * deltai[0];
+			deltai[0] = errorsi;
 
 			for (int j = 1; j <= inputSize; j++)
 			{
-				weights[i][j] -= learningRate / m * delta[i][j] + lambda / m * weights[i][j];
-				delta[i][j] = 0;
+				d = errorsi * input[j - 1];
+				weightsi[j] += learningRate * d + lambda * deltai[j];
+				deltai[j] = d;
 			}
 		}
 	}

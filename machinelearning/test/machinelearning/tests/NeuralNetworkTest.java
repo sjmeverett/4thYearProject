@@ -2,7 +2,7 @@ package machinelearning.tests;
 
 import static org.junit.Assert.*;
 
-import machinelearning.NeuralNetwork;
+import machinelearning.neuralnetworks.v1.NeuralNetwork;
 
 import org.junit.Test;
 

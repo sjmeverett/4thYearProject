@@ -1,4 +1,4 @@
-package machinelearning;
+package machinelearning.neuralnetworks.v1;
 
 public interface NeuronLayer
 {

@@ -23,24 +23,12 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
     
     
     @Override
-    public double getValue(double[] theta)
-    {
-        int m = y.length;
-        double[] h = h(X, theta);
-                
-        //J = (1 / m) * sum(cost(h(x),y)) + lambda / (2 * m) * sum(theta ^ 2)
-        return (1.0 / m) * sumcost(y, h) + lambda / (2.0 * m) * sumSquared(theta);
-    }
-
-    
-    @Override
-    public double[] getGradient(double[] theta)
+    public double getCost(double[] theta, double[] gradient)
     {
         int m = y.length;
         double[] h = h(X, theta);
         
         //grad = (1 / m) * (X' * (h - y) + lambda * [0; theta(2:end)]);
-        
         //calculate the error in the current prediction (h - y)
         double[] error = new double[h.length];
         
@@ -50,23 +38,21 @@ public class LogisticRegressionCostFunction implements MinimisableFunction
         }
         
         //calculate the gradient vector
-        double[] grad = new double[theta.length];
-        
         for (int row = 0; row < theta.length; row++)
         {
             for (int col = 0; col < X.length; col++)
             {
-                grad[row] += Xt[row][col] * error[col];
+                gradient[row] += Xt[row][col] * error[col];
             }
             
             if (row > 0)
-                grad[row] += lambda * theta[row];
+                gradient[row] += lambda * theta[row];
             
-            grad[row] /= m;
+            gradient[row] /= m;
         }
-        
-        return grad;
-        
+                
+        //J = (1 / m) * sum(cost(h(x),y)) + lambda / (2 * m) * sum(theta ^ 2)
+        return (1.0 / m) * sumcost(y, h) + lambda / (2.0 * m) * sumSquared(theta);
     }
     
     

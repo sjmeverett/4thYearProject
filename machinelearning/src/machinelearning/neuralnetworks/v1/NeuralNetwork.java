@@ -1,6 +1,7 @@
-package machinelearning;
+package machinelearning.neuralnetworks.v1;
 
 import java.util.Arrays;
+
 
 
 /**
