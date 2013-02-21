@@ -83,9 +83,10 @@ public class Matrix
 	/**
 	 * Returns the result of multiplying this matrix with the specified matrix.
 	 * @param op2
+	 * @param f The function to apply to each element, or null.
 	 * @return
 	 */
-	public Matrix multiply(Matrix op2)
+	public Matrix multiply(Matrix op2, Function f)
 	{
 		Matrix op1 = this;
 		double[] answer = new double[op1.rows * op2.columns];
@@ -109,6 +110,9 @@ public class Matrix
 					op2index += op2.columns;
 				}
 				
+				if (f != null)
+					sum = f.apply(sum, i, j);
+				
 				answer[answerindex++] = sum;
 			}
 			
@@ -120,11 +124,23 @@ public class Matrix
 	
 	
 	/**
-	 * Returns the result of multiplying this matrix transposed with the specified matrix.
+	 * Returns the result of multiplying this matrix with the specified matrix.
 	 * @param op2
 	 * @return
 	 */
-	public Matrix multiplyTransposeOp1(Matrix op2)
+	public Matrix multiply(Matrix op2)
+	{
+		return multiply(op2, null);
+	}
+	
+	
+	/**
+	 * Returns the result of multiplying this matrix transposed with the specified matrix.
+	 * @param op2
+	 * @param f The function to apply to each element, or null.
+	 * @return
+	 */
+	public Matrix multiplyTransposeOp1(Matrix op2, Function f)
 	{
 		Matrix op1 = this;
 		double[] answer = new double[op1.columns * op2.columns];
@@ -150,6 +166,9 @@ public class Matrix
 					op2index += op2.columns;
 				}
 				
+				if (f != null)
+					sum = f.apply(sum, i, j);
+				
 				answer[answerindex++] = sum;
 			}
 		}
@@ -159,12 +178,24 @@ public class Matrix
 	
 	
 	/**
-	 * Returns the result of multiplying this matrix with the specified matrix
-	 * transposed.
+	 * Returns the result of multiplying this matrix transposed with the specified matrix.
 	 * @param op2
 	 * @return
 	 */
-	public Matrix multiplyTransposeOp2(Matrix op2)
+	public Matrix multiplyTransposeOp1(Matrix op2)
+	{
+		return multiplyTransposeOp1(op2, null);
+	}
+	
+	
+	/**
+	 * Returns the result of multiplying this matrix with the specified matrix
+	 * transposed.
+	 * @param op2
+	 * @param f The function to apply to each element, or null.
+	 * @return
+	 */
+	public Matrix multiplyTransposeOp2(Matrix op2, Function f)
 	{
 		Matrix op1 = this;
 		double[] answer = new double[op1.rows * op2.rows];
@@ -188,6 +219,9 @@ public class Matrix
 					sum += op1.data[op1index + k] * op2.data[op2index + k];
 				}
 				
+				if (f != null)
+					sum = f.apply(sum, i, j);
+				
 				answer[answerindex++] = sum;
 				op2index += op2.columns;
 			}
@@ -196,6 +230,18 @@ public class Matrix
 		}
 		
 		return new Matrix(answer, op1.rows, op2.rows);
+	}
+	
+	
+	/**
+	 * Returns the result of multiplying this matrix with the specified matrix
+	 * transposed.
+	 * @param op2
+	 * @return
+	 */
+	public Matrix multiplyTransposeOp2(Matrix op2)
+	{
+		return multiplyTransposeOp2(op2, null);
 	}
 	
 	
@@ -285,9 +331,10 @@ public class Matrix
 	/**
 	 * Returns the result of subtracting the specified matrix from this matrix.
 	 * @param op2
+	 * @param f The function to apply to each element, or null.
 	 * @return
 	 */
-	public Matrix subtract(Matrix op2)
+	public Matrix subtract(Matrix op2, Function f)
 	{
 		Matrix op1 = this;
 		double[] answer = new double[data.length];
@@ -302,12 +349,28 @@ public class Matrix
 		{
 			for (int j = 0; j < op1.columns; j++)
 			{
-				answer[index] = op1.data[index] - op2.data[index];
+				double d = op1.data[index] - op2.data[index];
+				
+				if (f != null)
+					d = f.apply(d, i, j);
+				
+				answer[index] = d;
 				index++;
 			}
 		}
 		
 		return new Matrix(answer, rows, columns);
+	}
+	
+	
+	/**
+	 * Returns the result of subtracting the specified matrix from this matrix.
+	 * @param op2
+	 * @return
+	 */
+	public Matrix subtract(Matrix op2)
+	{
+		return subtract(op2, null);
 	}
 	
 	
@@ -326,7 +389,7 @@ public class Matrix
 		{
 			for (int j = 0; j < columns; j++)
 			{
-				answer[index] = f.apply(data[index]);
+				answer[index] = f.apply(data[index], i, j);
 				index++;
 			}
 		}
@@ -389,6 +452,6 @@ public class Matrix
 	 */
 	public interface Function
 	{
-		double apply(double value);
+		double apply(double value, int row, int col);
 	}
 }
