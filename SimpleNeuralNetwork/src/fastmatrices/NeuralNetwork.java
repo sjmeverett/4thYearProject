@@ -1,4 +1,4 @@
-package matrices;
+package fastmatrices;
 
 import java.util.Random;
 
@@ -9,8 +9,8 @@ public class NeuralNetwork
 	
 	public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes)
 	{
-		theta1 = new Matrix(randomArray(hiddenNodes, inputNodes + 1));
-		theta2 = new Matrix(randomArray(outputNodes, hiddenNodes + 1));
+		theta1 = new Matrix(randomArray(hiddenNodes, inputNodes + 1), hiddenNodes, inputNodes + 1);
+		theta2 = new Matrix(randomArray(outputNodes, hiddenNodes + 1), outputNodes, hiddenNodes + 1);
 	}
 	
 	
@@ -41,32 +41,32 @@ public class NeuralNetwork
 			{
 				Matrix d = t.subtract(a3);
 				Matrix e = d.transpose().multiply(d);
-				System.out.println(e.data[0][0]);
+				System.out.println(e.data[0]);
 			}
 		}
 	}
 	
 	
-	public double[] predict(double[] x)
+	public double[] predict(Matrix x)
 	{
-		Matrix a1 = Utilities.appendVertical(1, new Matrix(new double[][] { x }).transpose());
+		Matrix a1 = Utilities.appendVertical(1, x);
 		Matrix a2 = Utilities.appendVertical(1, theta1.multiply(a1).apply(sig));
 		Matrix a3 = theta2.multiply(a2).apply(sig);
 		
-		return a3.transpose().data[0];
+		return a3.transpose().data;
 	}
 	
 	
-	public Matrix bulkPredict(Matrix x)
+	public double[][] bulkPredict(Matrix x)
 	{
 		double[][] answer = new double[x.rows][];
 		
 		for (int i = 0; i < x.rows; i++)
 		{
-			answer[i] = predict(x.data[i]);
+			answer[i] = predict(x.part(i + 1, i + 1, 1, -1).transpose());
 		}
 		
-		return new Matrix(answer);
+		return answer;
 	}
 	
 	
@@ -97,16 +97,17 @@ public class NeuralNetwork
 	};
 	
 	
-	private static double[][] randomArray(int rows, int columns)
+	private static double[] randomArray(int rows, int columns)
 	{
-		double[][] a = new double[rows][columns];
+		double[] a = new double[rows * columns];
 		Random random = new Random();
+		int index = 0;
 		
 		for (int i = 0; i < rows; i++)
 		{
 			for (int j = 0; j < columns; j++)
 			{
-				a[i][j] = random.nextDouble();
+				a[index++] = random.nextDouble();
 			}
 		}
 		

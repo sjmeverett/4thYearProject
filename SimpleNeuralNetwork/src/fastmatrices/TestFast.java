@@ -1,6 +1,8 @@
-package matrices;
+package fastmatrices;
 
-public class Test
+import java.util.Arrays;
+
+public class TestFast
 {
 	public static void main(String[] args)
 	{
@@ -11,7 +13,7 @@ public class Test
 		NeuralNetwork net = new NeuralNetwork(x.columns, 10, 4);
 		net.train(x, y, 1, 1000);
 		
-		Matrix predicted = net.bulkPredict(x);
+		Matrix predicted = new Matrix(net.bulkPredict(x));
 		double err = Utilities.confusion(y, predicted);
 		System.out.println(err);
 	}

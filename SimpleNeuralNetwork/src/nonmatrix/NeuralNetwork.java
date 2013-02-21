@@ -20,7 +20,6 @@ import java.util.Random;
  */
 public class NeuralNetwork
 {
-	private static final double EPSILON = 1;
 	protected double[] hiddenWeights, outputWeights;
 	private int inputLayerSize, hiddenLayerSize, outputLayerSize;
 	private double learningRate;
@@ -165,7 +164,7 @@ public class NeuralNetwork
 	{	
 		double[] output = new double[layerSize];
 		
-		//use a pointer which we simply indicate as we go: faster than
+		//use a pointer which we simply implement as we go: faster than
 		//multiplication such as weights[i * layerSize + j] every time
 		int index = 0;
 		
@@ -235,7 +234,7 @@ public class NeuralNetwork
 			//for each unit in the output layer that this unit is connected to
 			for (int j = 0; j < outputLayerSize; j++)
 			{
-				sum += outputErrors[j] * outputWeights[j * (hiddenLayerSize + 1) + i];
+				sum += outputErrors[j] * outputWeights[index];
 				
 				//move down a row
 				index += hiddenLayerSize + 1;
@@ -300,7 +299,7 @@ public class NeuralNetwork
 		
 		for (int i = 0; i < size; i++)
 		{
-			a[i] = random.nextDouble() * EPSILON * 2 - EPSILON;
+			a[i] = random.nextDouble();
 		}
 		
 		return a;
