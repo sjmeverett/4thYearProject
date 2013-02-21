@@ -30,17 +30,17 @@ public class NeuralNetwork
 				t = y.part(j, j, 1, -1).transpose();
 				d3 = t.subtract(a3).elementMultiply(a3.apply(sigd));
 				
-				d2 = theta2.part(1, -1, 2, -1).transpose().multiply(d3)
+				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3)
 						.elementMultiply(a2.part(2, -1, 1, 1).apply(sigd));
 				
-				theta1 = theta1.add(d2.multiply(a1.transpose()).scale(learningRate));
-				theta2 = theta2.add(d3.multiply(a2.transpose()).scale(learningRate));
+				theta1 = theta1.add(d2.multiplyTransposeOp2(a1).scale(learningRate));
+				theta2 = theta2.add(d3.multiplyTransposeOp2(a2).scale(learningRate));
 			}
 			
 			if (i % mod == 0)
 			{
 				Matrix d = t.subtract(a3);
-				Matrix e = d.transpose().multiply(d);
+				Matrix e = d.multiplyTransposeOp1(d);
 				System.out.println(e.data[0]);
 			}
 		}

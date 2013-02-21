@@ -115,6 +115,86 @@ public class Matrix
 	
 	
 	/**
+	 * Returns the result of multiplying this matrix transposed with the specified matrix.
+	 * @param op2
+	 * @return
+	 */
+	public Matrix multiplyTransposeOp1(Matrix op2)
+	{
+		Matrix op1 = this;
+		double[] answer = new double[op1.columns * op2.columns];
+		int answerindex = 0, op1index, op2index;
+		
+		if (op1.rows != op2.rows)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (op1 is %dx%d, op2 is %dx%d)",
+				op1.rows, op1.columns, op2.rows, op2.columns));
+		
+		for (int i = 0; i < op1.columns; i++)
+		{
+			for (int j = 0; j < op2.columns; j++)
+			{
+				double sum = 0;
+				op1index = j;
+				op2index = j;
+				
+				for (int k = 0; k < op2.rows; k++)
+				{
+					sum += op1.data[op1index] * op2.data[op2index];
+					op1index += op1.columns;
+					op2index += op2.columns;
+				}
+				
+				answer[answerindex++] = sum;
+			}
+		}
+		
+		return new Matrix(answer, op1.columns, op2.columns);
+	}
+	
+	
+	/**
+	 * Returns the result of multiplying this matrix with the specified matrix
+	 * transposed.
+	 * @param op2
+	 * @return
+	 */
+	public Matrix multiplyTransposeOp2(Matrix op2)
+	{
+		Matrix op1 = this;
+		double[] answer = new double[op1.rows * op2.rows];
+		int answerindex = 0, op1index = 0, op2index;
+		
+		if (op1.columns != op2.columns)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (op1 is %dx%d, op2 is %dx%d)",
+				op1.rows, op1.columns, op2.rows, op2.columns));
+		
+		for (int i = 0; i < op1.rows; i++)
+		{
+			op2index = 0;
+			
+			for (int j = 0; j < op2.rows; j++)
+			{
+				double sum = 0;
+				
+				for (int k = 0; k < op2.columns; k++)
+				{
+					sum += op1.data[op1index + k] * op2.data[op2index + k];
+				}
+				
+				answer[answerindex++] = sum;
+				op2index += op2.columns;
+			}
+			
+			op1index += op1.columns;
+		}
+		
+		return new Matrix(answer, op1.rows, op2.rows);
+	}
+	
+	
+	/**
 	 * Returns the result of applying every element in this matrix with the
 	 * corresponding element in op2.
 	 * @param op2
