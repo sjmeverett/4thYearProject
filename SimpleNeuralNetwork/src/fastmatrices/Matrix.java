@@ -57,6 +57,11 @@ public class Matrix
 	 */
 	public Matrix transpose()
 	{
+		//fast case
+		if (columns == 1)
+			return new Matrix(data.clone(), columns, rows);
+		
+		//otherwise
 		double[] transpose = new double[columns * rows];
 		int index = 0, answerindex;
 		
