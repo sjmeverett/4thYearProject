@@ -18,7 +18,7 @@ public class NeuralNetwork
 	{
 		Matrix a1, a2, a3 = null, t = null, d3, d2;
 		int mod = iterations / 5;
-		
+
 		Matrix.Function learningScale = new Matrix.Function()
 		{
 			@Override
@@ -29,18 +29,24 @@ public class NeuralNetwork
 		};
 		
 		for (int i = 0; i < iterations; i++)
-		{
+		{			
 			for (int j = 1; j <= x.rows; j++)
 			{
-				a1 = Utilities.appendVertical(1, x.part(j, j, 1, -1).transpose());
+				a1 = Utilities.appendVertical(1, x.getRowAsColumn(j));
 				a2 = Utilities.appendVertical(1, theta1.multiply(a1, sig));
 				a3 = theta2.multiply(a2, sig);
 				
-				t = y.part(j, j, 1, -1).transpose();
-				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
+				t = y.getRowAsColumn(j);
 				
-				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
-						new SigmoidGradient(a2.data));
+				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
+//				
+//				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
+//						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
+				
+				//d3 = t.subtract(a3).elementMultiply(a3.apply(sigd));
+				
+				d2 = theta2.part(1, -1, 2, -1).transpose().multiply(d3, new SigmoidGradient(a2.part(2, -1, 1, 1).data));
+						//.elementMultiply(a2.part(2, -1, 1, 1).apply(sigd));
 				
 				theta1 = theta1.add(d2.multiplyTransposeOp2(a1, learningScale));
 				theta2 = theta2.add(d3.multiplyTransposeOp2(a2, learningScale));
@@ -49,7 +55,7 @@ public class NeuralNetwork
 			if (i % mod == 0)
 			{
 				Matrix d = t.subtract(a3);
-				Matrix e = d.multiplyTransposeOp1(d);
+				Matrix e = d.transpose().multiply(d);
 				System.out.println(e.data[0]);
 			}
 		}
@@ -127,7 +133,7 @@ public class NeuralNetwork
 	private static double[] randomArray(int rows, int columns)
 	{
 		double[] a = new double[rows * columns];
-		Random random = new Random();
+		Random random = new Random(1);
 		int index = 0;
 		
 		for (int i = 0; i < rows; i++)

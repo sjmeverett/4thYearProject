@@ -58,8 +58,10 @@ public class Matrix
 	public Matrix transpose()
 	{
 		//fast case
-		if (columns == 1)
+		if (columns == 1 || rows == 1)
+		{
 			return new Matrix(data.clone(), columns, rows);
+		}
 		
 		//otherwise
 		double[] transpose = new double[columns * rows];
@@ -156,7 +158,7 @@ public class Matrix
 			for (int j = 0; j < op2.columns; j++)
 			{
 				double sum = 0;
-				op1index = j;
+				op1index = i;
 				op2index = j;
 				
 				for (int k = 0; k < op2.rows; k++)
@@ -444,6 +446,19 @@ public class Matrix
 		}
 		
 		return new Matrix(answer, answerrows, answercols);
+	}
+
+	
+	/**
+	 * Gets the specified row from the matrix, as a column vector.
+	 * @param row
+	 * @return
+	 */
+	public Matrix getRowAsColumn(int row)
+	{
+		double[] answer = new double[columns];
+		System.arraycopy(data, (row - 1) * columns, answer, 0, columns);
+		return new Matrix(answer, columns, 1);
 	}
 	
 	
