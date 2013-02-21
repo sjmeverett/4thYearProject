@@ -10,6 +10,6 @@ public class Program
 		Executor executor = new Executor();
 		
 		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
-		executor.runGameTimed(new MyPacMan(parameters), parameters.opponent, true);
+		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
 	}
 }

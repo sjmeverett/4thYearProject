@@ -4,6 +4,7 @@ import java.util.Random;
 
 import pacman.controllers.Controller;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
+import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
@@ -19,6 +20,8 @@ public class MyPacMan extends Controller<MOVE>
 	private MonteCarloPacManSimulator simulator;
 	private MonteCarloPacManParameters parameters;
 	
+	private GhostLogger pinky, inky, blinky, sue;
+	
 	/**
 	 * Constructor.
 	 * @param parameters Parameters governing various aspects of the algorithms used.
@@ -26,18 +29,24 @@ public class MyPacMan extends Controller<MOVE>
 	public MyPacMan(MonteCarloPacManParameters parameters)
 	{
 		this.parameters = parameters;
+		
+		pinky = new GhostLogger(GHOST.PINKY);
+		inky = new GhostLogger(GHOST.INKY);
+		blinky = new GhostLogger(GHOST.BLINKY);
+		sue = new GhostLogger(GHOST.SUE);
 	}
 	
 	
 	public MyPacMan()
 	{
-		this.parameters = new MonteCarloPacManParameters();
+		this(new MonteCarloPacManParameters());
 	}
 	
 
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		MOVE move = MOVE.NEUTRAL;
+		timeDue = System.currentTimeMillis() + 40;
 		
 		if (simulator == null)
 		{
@@ -133,6 +142,11 @@ public class MyPacMan extends Controller<MOVE>
 		
 		//save the edible score so that we can detect if it changes
 		lastEdibleScore = game.getGhostCurrentEdibleScore();
+		
+		pinky.log(game);
+		inky.log(game);
+		blinky.log(game);
+		sue.log(game);
 		
         return move;
 	}
