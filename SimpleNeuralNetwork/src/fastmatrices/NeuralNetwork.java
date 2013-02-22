@@ -29,7 +29,7 @@ public class NeuralNetwork
 				
 				t = y.getRowAsColumn(j);
 				
-				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
+				d3 = calculateOutputError(t, a3);
 				d2 = calculateHiddenError(theta2, d3, a2);
 				
 				updateWeights(theta1, d2, a1, learningRate);
@@ -102,6 +102,26 @@ public class NeuralNetwork
 		}
 
 		return new Matrix(answer, theta.rows, activations.columns);
+	}
+	
+	
+	/**
+	 * Calculates the output error given the expected output and the actual output.
+	 * @param target The expected output.
+	 * @param activations The actual output.
+	 * @return
+	 */
+	private Matrix calculateOutputError(Matrix target, Matrix activations)
+	{
+		double[] answer = new double[target.rows];
+		
+		for (int i = 0; i < target.rows; i++)
+		{
+			double a = activations.data[i];
+			answer[i] = (target.data[i] - a) * a * (1 - a);
+		}
+		
+		return new Matrix(answer, target.rows, 1);
 	}
 	
 	
@@ -197,24 +217,6 @@ public class NeuralNetwork
 		}
 		
 	};
-	
-	
-	private class SigmoidGradient implements Matrix.Function
-	{
-		private double[] a;
-		
-		public SigmoidGradient(double[] a)
-		{
-			this.a = a;
-		}
-		
-		@Override
-		public double apply(double value, int row, int col)
-		{
-			double d = a[row];
-			return value * d * (1 - d);
-		}
-	}
 	
 	
 	private static double[] randomArray(int rows, int columns)
