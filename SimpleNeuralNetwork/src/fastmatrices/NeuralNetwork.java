@@ -23,16 +23,16 @@ public class NeuralNetwork
 		{			
 			for (int j = 1; j <= x.rows; j++)
 			{
-				a1 = Utilities.appendVertical(1, x.getRowAsColumn(j));
-				a2 = Utilities.appendVertical(1, theta1.multiply(a1, sig));
-				a3 = theta2.multiply(a2, sig);
+				a1 = x.getRowAsColumn(j);
+				a2 = calculateLayer(theta1, a1);
+				a3 = calculateLayer(theta2, a2);
 				
 				t = y.getRowAsColumn(j);
 				
 				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
 				
 				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
-						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
+						new SigmoidGradient(a2.data));
 				
 				updateWeights(theta1, d2, a1, learningRate);
 				updateWeights(theta2, d3, a2, learningRate);
@@ -71,7 +71,41 @@ public class NeuralNetwork
 	}
 	
 	
+	/**
+	 * Calculates the activations matrix given the previous layer's activations
+	 * and the weights for this layer,
+	 * i.e., calculates sigmoid(theta * activations).
+	 * @param theta
+	 * @param activations
+	 * @return
+	 */
+	private Matrix calculateLayer(Matrix theta, Matrix activations)
+	{
+		double[] answer = new double[theta.rows * activations.columns];
+		int answerindex = 0, thetaindex = 0, activationsindex;
+		
+		if (theta.columns != (activations.rows + 1))
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (theta is %dx%d, activations is %dx%d)",
+				theta.rows, theta.columns, activations.rows, activations.columns));
+		
+		for (int i = 0; i < theta.rows; i++)
+		{
+			double sum = theta.data[thetaindex];
+			activationsindex = 0;
+			
+			for (int k = 0; k < activations.rows; k++)
+			{
+				sum += theta.data[thetaindex + k + 1] * activations.data[activationsindex++];
+			}
+			
+			answer[answerindex++] = 1.0 / (1 + Math.exp(-sum));
+			thetaindex += theta.columns;
+		}
 
+		return new Matrix(answer, theta.rows, activations.columns);
+	}
+	
 	
 	/**
 	 * Updates the weights according to the specified parameters,
@@ -91,25 +125,19 @@ public class NeuralNetwork
 				"non-conformant arguments (delta is %dx%d, activations is %dx%d)",
 				delta.rows, delta.columns, activations.rows, activations.columns));
 		
-		if (delta.rows != weights.rows || activations.rows != weights.columns)
+		if (delta.rows != weights.rows || (activations.rows + 1) != weights.columns)
 			throw new IllegalArgumentException(String.format(
 				"non-conformant arguments (weights is %dx%d, delta * activations' is %dx%d)",
 				weights.rows, weights.columns, delta.rows, activations.rows));
 		
 		for (int i = 0; i < delta.rows; i++)
 		{
+			weights.data[answerindex++] += delta.data[deltaindex] * learningRate;
 			activationsindex = 0;
 			
 			for (int j = 0; j < activations.rows; j++)
 			{
-				double sum = 0;
-				
-				for (int k = 0; k < activations.columns; k++)
-				{
-					sum += delta.data[deltaindex + k] * activations.data[activationsindex + k];
-				}
-				
-				weights.data[answerindex++] += sum * learningRate;
+				weights.data[answerindex++] += delta.data[deltaindex] * activations.data[activationsindex] * learningRate;
 				activationsindex += activations.columns;
 			}
 			
