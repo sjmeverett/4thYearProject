@@ -132,9 +132,9 @@ public class NeuralNetwork
 		{
 			double sum = theta.data[thetaindex++];
 			
-			for (int k = 0; k < activations.rows; k++)
+			for (int j = 0; j < activations.rows; j++)
 			{
-				sum += theta.data[thetaindex++] * activations.data[k];
+				sum += theta.data[thetaindex++] * activations.data[j];
 			}
 			
 			answer[i] = 1.0 / (1 + Math.exp(-sum));
@@ -175,7 +175,7 @@ public class NeuralNetwork
 	private Matrix calculateHiddenError(Matrix theta, Matrix delta, Matrix activations)
 	{
 		double[] answer = new double[theta.columns - 1];
-		int answerindex = 0, thetaindex;
+		int thetaindex;
 		
 		if (theta.rows != delta.rows)
 			throw new IllegalArgumentException(String.format(
@@ -194,7 +194,7 @@ public class NeuralNetwork
 			}
 			
 			double d = activations.data[i - 1];
-			answer[answerindex++] = sum * d * (1 - d);
+			answer[i - 1] = sum * d * (1 - d);
 		}
 		
 		return new Matrix(answer, theta.columns - 1, 1);
