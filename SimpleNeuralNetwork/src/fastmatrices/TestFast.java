@@ -12,7 +12,7 @@ public class TestFast
 		long time = System.currentTimeMillis();
 		
 		NeuralNetwork net = new NeuralNetwork(x.columns, 10, 4);
-		net.train(x, y, 1, 1000);
+		net.train(x, y, 0.2, 1000);
 		
 		System.out.println("time: " + (System.currentTimeMillis() - time));
 		

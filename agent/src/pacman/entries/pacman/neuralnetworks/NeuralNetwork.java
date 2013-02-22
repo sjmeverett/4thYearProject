@@ -1,4 +1,4 @@
-package fastmatrices;
+package pacman.entries.pacman.neuralnetworks;
 
 import java.util.Random;
 
@@ -38,33 +38,30 @@ public class NeuralNetwork
 	
 	
 	/**
-	 * Trains the neural network with the specified data.
-	 * @param x A matrix containing a row for each example input.
-	 * @param y A matrix containing a row for each corresponding example output.
+	 * Trains the neural network with the specified example.
+	 * @param x The example input.
+	 * @param y The corresponding expected output for the input.
 	 * @param learningRate A parameter affecting how quickly the network learns.
 	 * @param iterations The number of iterations to train over.
 	 */
-	public void train(Matrix x, Matrix y, double learningRate, int iterations)
+	public void train(double[] x, double[] y, double learningRate, int iterations)
 	{
 		Matrix a1, a2, a3 = null, t = null, d3, d2;
 		int mod = iterations / 5;
 		
+		a1 = new Matrix(x, x.length, 1);
+		t = new Matrix(y, y.length, 1);
+		
 		for (int i = 0; i < iterations; i++)
-		{			
-			for (int j = 1; j <= x.rows; j++)
-			{
-				a1 = x.getRowAsColumn(j);
-				a2 = calculateLayer(theta1, a1);
-				a3 = calculateLayer(theta2, a2);
-				
-				t = y.getRowAsColumn(j);
-				
-				d3 = calculateOutputError(t, a3);
-				d2 = calculateHiddenError(theta2, d3, a2);
-				
-				updateWeights(theta1, d2, a1, learningRate);
-				updateWeights(theta2, d3, a2, learningRate);
-			}
+		{
+			a2 = calculateLayer(theta1, a1);
+			a3 = calculateLayer(theta2, a2);
+			
+			d3 = calculateOutputError(t, a3);
+			d2 = calculateHiddenError(theta2, d3, a2);
+			
+			updateWeights(theta1, d2, a1, learningRate);
+			updateWeights(theta2, d3, a2, learningRate);
 			
 			if (i % mod == 0)
 			{
@@ -83,9 +80,10 @@ public class NeuralNetwork
 	 * @param x
 	 * @return
 	 */
-	public double[] predict(Matrix x)
+	public double[] predict(double[] x)
 	{
-		Matrix a2 = calculateLayer(theta1, x);
+		Matrix a1 = new Matrix(x, x.length, 1);
+		Matrix a2 = calculateLayer(theta1, a1);
 		Matrix a3 = calculateLayer(theta2, a2);
 		
 		return a3.data;
@@ -93,20 +91,28 @@ public class NeuralNetwork
 	
 	
 	/**
-	 * Returns an array containing a row of predicted output for each row of input.
-	 * @param x A matrix containing a row for each input to predict for.
+	 * Given the input x, predicts the class with the highest probability
+	 * using the network's learned weights.
+	 * @param x The input data.
+	 * @param classes An array of classes in the same order as the output nodes.
 	 * @return
 	 */
-	public double[][] bulkPredict(Matrix x)
+	public Object predict(double[] x, Object[] classes)
 	{
-		double[][] answer = new double[x.rows][];
+		double[] y = predict(x);
+		Object output = null;
+		double max = 0;
 		
-		for (int i = 0; i < x.rows; i++)
+		for (int i = 0; i < y.length; i++)
 		{
-			answer[i] = predict(x.part(i + 1, i + 1, 1, -1).transpose());
+			if (y[i] > max)
+			{
+				max = y[i];
+				output = classes[i];
+			}
 		}
 		
-		return answer;
+		return output;
 	}
 	
 	
