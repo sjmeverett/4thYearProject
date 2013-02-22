@@ -64,17 +64,17 @@ public class Matrix
 		}
 		
 		//otherwise
-		double[] transpose = new double[columns * rows];
+		double[] transpose = new double[data.length];
 		int index = 0, answerindex;
 		
-		for (int i = 0; i < columns; i++)
+		for (int i = 0; i < rows; i++)
 		{
 			answerindex = i;
 			
-			for (int j = 0; j < rows; j++)
+			for (int j = 0; j < columns; j++)
 			{
 				transpose[answerindex] = data[index++];
-				answerindex += columns;
+				answerindex += rows;
 			}
 		}
 		

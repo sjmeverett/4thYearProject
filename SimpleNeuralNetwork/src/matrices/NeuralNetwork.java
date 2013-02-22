@@ -100,7 +100,7 @@ public class NeuralNetwork
 	private static double[][] randomArray(int rows, int columns)
 	{
 		double[][] a = new double[rows][columns];
-		Random random = new Random();
+		Random random = new Random(1);
 		
 		for (int i = 0; i < rows; i++)
 		{

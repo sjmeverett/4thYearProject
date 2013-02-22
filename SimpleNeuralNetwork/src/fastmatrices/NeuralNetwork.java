@@ -39,14 +39,9 @@ public class NeuralNetwork
 				t = y.getRowAsColumn(j);
 				
 				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
-//				
-//				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
-//						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
 				
-				//d3 = t.subtract(a3).elementMultiply(a3.apply(sigd));
-				
-				d2 = theta2.part(1, -1, 2, -1).transpose().multiply(d3, new SigmoidGradient(a2.part(2, -1, 1, 1).data));
-						//.elementMultiply(a2.part(2, -1, 1, 1).apply(sigd));
+				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
+						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
 				
 				theta1 = theta1.add(d2.multiplyTransposeOp2(a1, learningScale));
 				theta2 = theta2.add(d3.multiplyTransposeOp2(a2, learningScale));
@@ -55,7 +50,7 @@ public class NeuralNetwork
 			if (i % mod == 0)
 			{
 				Matrix d = t.subtract(a3);
-				Matrix e = d.transpose().multiply(d);
+				Matrix e = d.multiplyTransposeOp1(d);
 				System.out.println(e.data[0]);
 			}
 		}
