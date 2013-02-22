@@ -74,8 +74,8 @@ public class NeuralNetwork
 
 	
 	/**
-	 * Treating this matrix as a weights, matrix, updates the weights according to the
-	 * specified parameters, i.e., calculates weights += learningRate * delta * activations'.
+	 * Updates the weights according to the specified parameters,
+	 * i.e., calculates weights += learningRate * delta * activations'.
 	 * @param weights
 	 * @param delta
 	 * @param activations
