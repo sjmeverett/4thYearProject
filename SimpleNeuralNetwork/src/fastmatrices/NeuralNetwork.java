@@ -18,15 +18,6 @@ public class NeuralNetwork
 	{
 		Matrix a1, a2, a3 = null, t = null, d3, d2;
 		int mod = iterations / 5;
-
-		Matrix.Function learningScale = new Matrix.Function()
-		{
-			@Override
-			public double apply(double value, int row, int col)
-			{
-				return value * learningRate;
-			}
-		};
 		
 		for (int i = 0; i < iterations; i++)
 		{			
@@ -43,8 +34,8 @@ public class NeuralNetwork
 				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
 						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
 				
-				theta1.updateWeights(d2, a1, learningRate);
-				theta2.updateWeights(d3, a2, learningRate);
+				updateWeights(theta1, d2, a1, learningRate);
+				updateWeights(theta2, d3, a2, learningRate);
 			}
 			
 			if (i % mod == 0)
@@ -80,6 +71,55 @@ public class NeuralNetwork
 	}
 	
 	
+
+	
+	/**
+	 * Treating this matrix as a weights, matrix, updates the weights according to the
+	 * specified parameters, i.e., calculates weights += learningRate * delta * activations'.
+	 * @param weights
+	 * @param delta
+	 * @param activations
+	 * @param learningRate
+	 * @return
+	 */
+	private Matrix updateWeights(Matrix weights, Matrix delta, Matrix activations, double learningRate)
+	{
+		int answerindex = 0, deltaindex = 0, activationsindex;
+		
+		if (delta.columns != activations.columns)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (delta is %dx%d, activations is %dx%d)",
+				delta.rows, delta.columns, activations.rows, activations.columns));
+		
+		if (delta.rows != weights.rows || activations.rows != weights.columns)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (weights is %dx%d, delta * activations' is %dx%d)",
+				weights.rows, weights.columns, delta.rows, activations.rows));
+		
+		for (int i = 0; i < delta.rows; i++)
+		{
+			activationsindex = 0;
+			
+			for (int j = 0; j < activations.rows; j++)
+			{
+				double sum = 0;
+				
+				for (int k = 0; k < activations.columns; k++)
+				{
+					sum += delta.data[deltaindex + k] * activations.data[activationsindex + k];
+				}
+				
+				weights.data[answerindex++] += sum * learningRate;
+				activationsindex += activations.columns;
+			}
+			
+			deltaindex += delta.columns;
+		}
+		
+		return weights;
+	}
+	
+	
 	/**
 	 * Calculates the sigmoid activation function.
 	 */
@@ -91,19 +131,6 @@ public class NeuralNetwork
 			return 1.0 / (1 + Math.exp(-value));
 		}
 		
-	};
-	
-	
-	/**
-	 * Calculates the gradient of the sigmoid activation function.
-	 */
-	private Matrix.Function sigd = new Matrix.Function()
-	{
-		@Override
-		public double apply(double value, int row, int col)
-		{
-			return value * (1 - value);
-		}
 	};
 	
 	
