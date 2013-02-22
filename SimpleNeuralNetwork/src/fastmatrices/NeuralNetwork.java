@@ -30,9 +30,7 @@ public class NeuralNetwork
 				t = y.getRowAsColumn(j);
 				
 				d3 = t.subtract(a3, new SigmoidGradient(a3.data));
-				
-				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
-						new SigmoidGradient(a2.data));
+				d2 = calculateHiddenError(theta2, d3, a2);
 				
 				updateWeights(theta1, d2, a1, learningRate);
 				updateWeights(theta2, d3, a2, learningRate);
@@ -81,7 +79,7 @@ public class NeuralNetwork
 	 */
 	private Matrix calculateLayer(Matrix theta, Matrix activations)
 	{
-		double[] answer = new double[theta.rows * activations.columns];
+		double[] answer = new double[theta.rows];
 		int answerindex = 0, thetaindex = 0, activationsindex;
 		
 		if (theta.columns != (activations.rows + 1))
@@ -104,6 +102,45 @@ public class NeuralNetwork
 		}
 
 		return new Matrix(answer, theta.rows, activations.columns);
+	}
+	
+	
+	/**
+	 * Calculates the hidden layer error given the output layer weights and error,
+	 * and the hidden layer activations.
+	 * @param theta The output layer weights.
+	 * @param delta The output layer error.
+	 * @param activations The hidden layer activations.
+	 * @return
+	 */
+	private Matrix calculateHiddenError(Matrix theta, Matrix delta, Matrix activations)
+	{
+		double[] answer = new double[theta.columns - 1];
+		int answerindex = 0, thetaindex, deltaindex;
+		
+		if (theta.rows != delta.rows)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (op1 is %dx%d, op2 is %dx%d)",
+				theta.rows, theta.columns, delta.rows, delta.columns));
+		
+		for (int i = 1; i < theta.columns; i++)
+		{
+			double sum = 0;
+			thetaindex = i;
+			deltaindex = 0;
+			
+			for (int k = 0; k < delta.rows; k++)
+			{
+				sum += theta.data[thetaindex] * delta.data[deltaindex];
+				thetaindex += theta.columns;
+				deltaindex += delta.columns;
+			}
+			
+			double d = activations.data[i - 1];
+			answer[answerindex++] = sum * d * (1 - d);
+		}
+		
+		return new Matrix(answer, theta.columns - 1, 1);
 	}
 	
 	
