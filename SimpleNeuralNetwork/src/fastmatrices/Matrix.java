@@ -1,7 +1,7 @@
 package fastmatrices;
 
 /**
- * Simple dense matrix class.
+ * Dense matrix class with optimisations for neural networks.
  */
 public class Matrix
 {
@@ -244,6 +244,52 @@ public class Matrix
 	public Matrix multiplyTransposeOp2(Matrix op2)
 	{
 		return multiplyTransposeOp2(op2, null);
+	}
+	
+	
+	/**
+	 * Treating this matrix as a weights, matrix, updates the weights according to the
+	 * specified parameters, i.e., calculates this += learningRate * delta * activations'.
+	 * @param delta
+	 * @param activations
+	 * @param learningRate
+	 * @return
+	 */
+	public Matrix updateWeights(Matrix delta, Matrix activations, double learningRate)
+	{
+		int answerindex = 0, deltaindex = 0, activationsindex;
+		
+		if (delta.columns != activations.columns)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (delta is %dx%d, activations is %dx%d)",
+				delta.rows, delta.columns, activations.rows, activations.columns));
+		
+		if (delta.rows != rows || activations.rows != columns)
+			throw new IllegalArgumentException(String.format(
+				"non-conformant arguments (weights is %dx%d, delta * activations' is %dx%d)",
+				rows, columns, delta.rows, activations.rows));
+		
+		for (int i = 0; i < delta.rows; i++)
+		{
+			activationsindex = 0;
+			
+			for (int j = 0; j < activations.rows; j++)
+			{
+				double sum = 0;
+				
+				for (int k = 0; k < activations.columns; k++)
+				{
+					sum += delta.data[deltaindex + k] * activations.data[activationsindex + k];
+				}
+				
+				data[answerindex++] += sum * learningRate;
+				activationsindex += activations.columns;
+			}
+			
+			deltaindex += delta.columns;
+		}
+		
+		return this;
 	}
 	
 	

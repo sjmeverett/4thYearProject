@@ -43,8 +43,8 @@ public class NeuralNetwork
 				d2 = theta2.part(1, -1, 2, -1).multiplyTransposeOp1(d3,
 						new SigmoidGradient(a2.part(2, -1, 1, 1).data));
 				
-				theta1 = theta1.add(d2.multiplyTransposeOp2(a1, learningScale));
-				theta2 = theta2.add(d3.multiplyTransposeOp2(a2, learningScale));
+				theta1.updateWeights(d2, a1, learningRate);
+				theta2.updateWeights(d3, a2, learningRate);
 			}
 			
 			if (i % mod == 0)
