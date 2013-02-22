@@ -46,13 +46,17 @@ public class NeuralNetwork
 	}
 	
 	
+	/**
+	 * Predicts the output for a given input using the learned weights.
+	 * @param x
+	 * @return
+	 */
 	public double[] predict(Matrix x)
 	{
-		Matrix a1 = Utilities.appendVertical(1, x);
-		Matrix a2 = Utilities.appendVertical(1, theta1.multiply(a1, sig));
-		Matrix a3 = theta2.multiply(a2, sig);
+		Matrix a2 = calculateLayer(theta1, x);
+		Matrix a3 = calculateLayer(theta2, a2);
 		
-		return a3.transpose().data;
+		return a3.data;
 	}
 	
 	
