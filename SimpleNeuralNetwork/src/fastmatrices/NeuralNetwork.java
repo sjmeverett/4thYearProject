@@ -2,11 +2,34 @@ package fastmatrices;
 
 import java.util.Random;
 
+/**
+ * Implements a neural network using ideas in chapter 8 of "An Introduction
+ * to Neural Computing, Second Edition" by Igor Aleksander and Helen Morton,
+ * which in turn summarises the findings in "Learning internal representations
+ * by error propagation" by Rumelhart, Hinton and Williams (in "Parallel
+ * Distributed Processing: Explorations in the Microstructure of Cognition",
+ * edited by Rumelhart and McClelland).
+ * 
+ * The neural network consists of an input layer, hidden layer and an output
+ * layer, where the output of a neuron is given by the activation function of
+ * the sum of the incoming connections modified by corresponding weights.
+ * 
+ * The activation function used is a sigmoid function, namely 1 / (1 + e^-a).
+ * 
+ * The weights are modified iteratively using a backpropagation algorithm.
+ */
 public class NeuralNetwork
 {
+	private static final double MINSQUAREDERROR = 10e-5;
 	public Matrix theta1, theta2;
 	
 	
+	/**
+	 * Creates a new neural network of the specified size.
+	 * @param inputNodes The number of units in the input layer.
+	 * @param hiddenNodes The number of units in the hidden layer.
+	 * @param outputNodes The number of units in the output layer.
+	 */
 	public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes)
 	{
 		theta1 = new Matrix(randomArray(hiddenNodes, inputNodes + 1), hiddenNodes, inputNodes + 1);
@@ -14,7 +37,14 @@ public class NeuralNetwork
 	}
 	
 	
-	public void train(Matrix x, Matrix y, final double learningRate, int iterations)
+	/**
+	 * Trains the neural network with the specified data.
+	 * @param x A matrix containing a row for each example input.
+	 * @param y A matrix containing a row for each corresponding example output.
+	 * @param learningRate A parameter affecting how quickly the network learns.
+	 * @param iterations The number of iterations to train over.
+	 */
+	public void train(Matrix x, Matrix y, double learningRate, int iterations)
 	{
 		Matrix a1, a2, a3 = null, t = null, d3, d2;
 		int mod = iterations / 5;
@@ -40,7 +70,9 @@ public class NeuralNetwork
 			{
 				Matrix d = t.subtract(a3);
 				Matrix e = d.multiplyTransposeOp1(d);
-				System.out.println(e.data[0]);
+
+				if (e.data[0] < MINSQUAREDERROR)
+					return;
 			}
 		}
 	}
@@ -60,6 +92,11 @@ public class NeuralNetwork
 	}
 	
 	
+	/**
+	 * Returns an array containing a row of predicted output for each row of input.
+	 * @param x A matrix containing a row for each input to predict for.
+	 * @return
+	 */
 	public double[][] bulkPredict(Matrix x)
 	{
 		double[][] answer = new double[x.rows][];
@@ -84,7 +121,7 @@ public class NeuralNetwork
 	private Matrix calculateLayer(Matrix theta, Matrix activations)
 	{
 		double[] answer = new double[theta.rows];
-		int answerindex = 0, thetaindex = 0, activationsindex;
+		int thetaindex = 0;
 		
 		if (theta.columns != (activations.rows + 1))
 			throw new IllegalArgumentException(String.format(
@@ -93,19 +130,17 @@ public class NeuralNetwork
 		
 		for (int i = 0; i < theta.rows; i++)
 		{
-			double sum = theta.data[thetaindex];
-			activationsindex = 0;
+			double sum = theta.data[thetaindex++];
 			
 			for (int k = 0; k < activations.rows; k++)
 			{
-				sum += theta.data[thetaindex + k + 1] * activations.data[activationsindex++];
+				sum += theta.data[thetaindex++] * activations.data[k];
 			}
 			
-			answer[answerindex++] = 1.0 / (1 + Math.exp(-sum));
-			thetaindex += theta.columns;
+			answer[i] = 1.0 / (1 + Math.exp(-sum));
 		}
 
-		return new Matrix(answer, theta.rows, activations.columns);
+		return new Matrix(answer, theta.rows, 1);
 	}
 	
 	
@@ -140,7 +175,7 @@ public class NeuralNetwork
 	private Matrix calculateHiddenError(Matrix theta, Matrix delta, Matrix activations)
 	{
 		double[] answer = new double[theta.columns - 1];
-		int answerindex = 0, thetaindex, deltaindex;
+		int answerindex = 0, thetaindex;
 		
 		if (theta.rows != delta.rows)
 			throw new IllegalArgumentException(String.format(
@@ -151,13 +186,11 @@ public class NeuralNetwork
 		{
 			double sum = 0;
 			thetaindex = i;
-			deltaindex = 0;
 			
-			for (int k = 0; k < delta.rows; k++)
+			for (int j = 0; j < delta.rows; j++)
 			{
-				sum += theta.data[thetaindex] * delta.data[deltaindex];
+				sum += theta.data[thetaindex] * delta.data[j];
 				thetaindex += theta.columns;
-				deltaindex += delta.columns;
 			}
 			
 			double d = activations.data[i - 1];
@@ -179,7 +212,7 @@ public class NeuralNetwork
 	 */
 	private Matrix updateWeights(Matrix weights, Matrix delta, Matrix activations, double learningRate)
 	{
-		int answerindex = 0, deltaindex = 0, activationsindex;
+		int answerindex = 0;
 		
 		if (delta.columns != activations.columns)
 			throw new IllegalArgumentException(String.format(
@@ -193,16 +226,12 @@ public class NeuralNetwork
 		
 		for (int i = 0; i < delta.rows; i++)
 		{
-			weights.data[answerindex++] += delta.data[deltaindex] * learningRate;
-			activationsindex = 0;
+			weights.data[answerindex++] += delta.data[i] * learningRate;
 			
 			for (int j = 0; j < activations.rows; j++)
 			{
-				weights.data[answerindex++] += delta.data[deltaindex] * activations.data[activationsindex] * learningRate;
-				activationsindex += activations.columns;
+				weights.data[answerindex++] += delta.data[i] * activations.data[j] * learningRate;
 			}
-			
-			deltaindex += delta.columns;
 		}
 		
 		return weights;
@@ -210,19 +239,11 @@ public class NeuralNetwork
 	
 	
 	/**
-	 * Calculates the sigmoid activation function.
+	 * Randomly initialises an array.
+	 * @param rows
+	 * @param columns
+	 * @return
 	 */
-	private Matrix.Function sig = new Matrix.Function()
-	{
-		@Override
-		public double apply(double value, int row, int col)
-		{
-			return 1.0 / (1 + Math.exp(-value));
-		}
-		
-	};
-	
-	
 	private static double[] randomArray(int rows, int columns)
 	{
 		double[] a = new double[rows * columns];
