@@ -2,6 +2,7 @@ package pacman;
 
 import pacman.entries.pacman.MonteCarloPacManParameters;
 import pacman.entries.pacman.MyPacMan;
+import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
 
 public class Program
 {
@@ -10,6 +11,8 @@ public class Program
 		Executor executor = new Executor();
 		
 		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
+		parameters.ghostModel = new NeuralNetworkGhostController(parameters.moveSelectionStrategy);
+		//parameters.opponent = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
 		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
 	}
 }

@@ -7,6 +7,9 @@ import pacman.game.Game;
 
 public class GhostState
 {
+	public static final int FEATURE_COUNT = 14;
+	
+	public GHOST ghost;
 	public boolean requiresAction;
 	public int levelTime;
 	public int edibleScore;
@@ -22,6 +25,7 @@ public class GhostState
 	
 	public GhostState(Game game, GHOST ghost)
 	{
+		this.ghost = ghost;
 		requiresAction = game.doesGhostRequireAction(ghost);
 		
 		levelTime = game.getCurrentLevelTime();
@@ -64,6 +68,19 @@ public class GhostState
 			(chasePacman == MOVE.RIGHT ? 1 : 0),
 			
 			distanceToPacman / 100
+		};
+	}
+	
+	
+	public double[] getDirection(Game game)
+	{
+		MOVE move = game.getGhostLastMoveMade(ghost);
+		
+		return new double[] {
+			move == MOVE.UP ? 1.0 : 0.0,
+			move == MOVE.DOWN ? 1.0 : 0.0,
+			move == MOVE.LEFT ? 1.0 : 0.0,
+			move == MOVE.RIGHT ? 1.0 : 0.0
 		};
 	}
 }

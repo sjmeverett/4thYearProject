@@ -9,6 +9,8 @@ import pacman.entries.pacman.evaluators.DistanceToOpportunityEvaluator;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillActiveEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillDistanceEvaluator;
+import pacman.entries.pacman.neuralnetworks.MaxMoveSelectionStrategy;
+import pacman.entries.pacman.neuralnetworks.MoveSelectionStrategy;
 import pacman.entries.pacman.selectionpolicies.ISelectionPolicy;
 import pacman.entries.pacman.selectionpolicies.LevineUcbSelectionPolicy;
 import pacman.game.Constants.GHOST;
@@ -102,6 +104,11 @@ public class MonteCarloPacManParameters
 	 */
 	public boolean eatGhostNode;
 	
+	/**
+	 * The strategy to use when selecting a ghost move to play in the ghost neural networks.
+	 */
+	public MoveSelectionStrategy moveSelectionStrategy;
+	
 	
 	/**
 	 * Constructor.  Sets default values for the parameters.
@@ -123,6 +130,7 @@ public class MonteCarloPacManParameters
 		showGraph = false;
 		useGhostPositions = true;
 		eatGhostNode = true;
+		moveSelectionStrategy = new MaxMoveSelectionStrategy();
 		
 		/*nodeExpansionThreshold = 50;
 		maximumSimulationLength = 10000000;
@@ -163,6 +171,7 @@ public class MonteCarloPacManParameters
 		p.discardTreeOnDecision = discardTreeOnDecision;
 		p.experimentName = experimentName;
 		p.opponent = opponent.getClass().newInstance();
+		p.moveSelectionStrategy = moveSelectionStrategy;
 		return p;
 	}
 }

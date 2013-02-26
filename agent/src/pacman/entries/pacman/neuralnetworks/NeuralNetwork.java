@@ -38,6 +38,21 @@ public class NeuralNetwork
 	
 	
 	/**
+	 * Creates a new neural network of the specified size using the specified initial weights.
+	 * @param inputNodes
+	 * @param hiddenNodes
+	 * @param outputNodes
+	 * @param theta1
+	 * @param theta2
+	 */
+	public NeuralNetwork(int inputNodes, int hiddenNodes, int outputNodes, double[] theta1, double[] theta2)
+	{
+		this.theta1 = new Matrix(theta1, hiddenNodes, inputNodes + 1);
+		this.theta2 = new Matrix(theta2, outputNodes, hiddenNodes + 1);
+	}
+	
+	
+	/**
 	 * Trains the neural network with the specified example.
 	 * @param x The example input.
 	 * @param y The corresponding expected output for the input.
