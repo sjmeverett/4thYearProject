@@ -44,7 +44,7 @@ public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE
 			double[] theta2 = (double[])reader.readObject();
 			reader.close();
 			
-			GhostNeuralNetwork network = new GhostNeuralNetwork(ghost, new MaxMoveSelectionStrategy(), theta1, theta2);
+			GhostNeuralNetwork network = new GhostNeuralNetwork(ghost, new RouletteMoveSelectionStrategy(), theta1, theta2);
 			networks.put(ghost, network);
 		}
 		catch (IOException ex)

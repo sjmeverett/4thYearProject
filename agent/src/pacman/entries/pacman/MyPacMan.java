@@ -45,6 +45,8 @@ public class MyPacMan extends Controller<MOVE>
 		//TODO: hack, I'll fix this later
 		((NeuralNetworkGhostController)parameters.ghostModel).train(game);
 		
+		//System.out.println(timeDue - System.currentTimeMillis());
+		
 		if (simulator == null)
 		{
 			//first move, just pick a random one because it shouldn't really matter too much
@@ -114,6 +116,9 @@ public class MyPacMan extends Controller<MOVE>
 			else
 			{
 				move = node.getMove();
+				
+				if (move == MOVE.NEUTRAL)
+					System.out.println("No good moves!");
 			}
 			
 			if (parameters.discardTreeOnDecision || node == null)
@@ -132,7 +137,7 @@ public class MyPacMan extends Controller<MOVE>
 			{
 				//oops, too late: increase the time buffer so we're not late next time
 				//timeBuffer++;
-				//System.out.println("Too late!");
+				System.out.println("Too late!");
 			}
 		}
 		
