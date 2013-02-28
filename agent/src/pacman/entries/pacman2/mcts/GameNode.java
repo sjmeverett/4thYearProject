@@ -17,7 +17,7 @@ public class GameNode
 	public Game state;
 	public MOVE move;
 	public List<GameNode> children;
-	public double totalScore;
+	public double score;
 	public int visitCount;
 	
 	/**

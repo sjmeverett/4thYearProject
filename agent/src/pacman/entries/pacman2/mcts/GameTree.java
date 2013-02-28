@@ -1,27 +1,99 @@
 package pacman.entries.pacman2.mcts;
 
-import java.util.EnumMap;
+import java.util.ArrayList;
 
-import pacman.controllers.Controller;
+import pacman.entries.pacman2.Parameters;
 import pacman.entries.pacman2.mcts.backpropagationstrategies.BackpropagationStrategy;
-import pacman.entries.pacman2.mcts.selectionstrategies.SelectionStrategy;
-import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-
+/**
+ * Represents the game of Ms Pac-Man in a tree, with a node for each decision
+ * point.
+ */
 public class GameTree
 {
-	private SelectionStrategy selectionStrategy;
 	private Game state;
 	private TurnBasedGameAdapter game;
 	private GameNode root;
-	private int expansionThreshold;
-	private double maxPathLength;
+	
+	private Parameters parameters;
 	private BackpropagationStrategy backpropagationStrategy;
-	private int maxRolloutTime;
-	private Controller<MOVE> pacmanController;
-	private Controller<EnumMap<GHOST, MOVE>> ghostController;
+	
+	
+	/**
+	 * Constructor.
+	 * @param parameters An object containing the parameters for the algorithm.
+	 */
+	public GameTree(Parameters parameters)
+	{
+		this.parameters = parameters;
+		this.root = new GameNode(null, MOVE.NEUTRAL);
+	}
+	
+	
+	/**
+	 * Runs an iteration of Monte Carlo tree search on the game tree.
+	 */
+	public void runMCTS(Game state)
+	{
+		this.state = state;
+		this.game = new TurnBasedGameAdapter(state, parameters.ghostController);
+		
+		GameNode node = selection();
+		rollout(node);
+	}
+	
+	
+	/**
+	 * Gets the move represented by the immediate child of the root node with
+	 * the highest score.
+	 * @return
+	 */
+	public MOVE getBestMove()
+	{
+		if (root.children == null)
+			return MOVE.NEUTRAL;
+		
+		MOVE move = MOVE.NEUTRAL;
+		double max = 0;
+		
+		for (GameNode node: root.children)
+		{
+			if (node.score > max)
+			{
+				max = node.score;
+				move = node.move;
+			}
+		}
+		
+		return move;
+	}
+	
+	
+	/**
+	 * Updates the backpropagation strategy to the first in the list of
+	 * strategies which returns true for isActive.
+	 * @param game
+	 * @returns True if the strategy was changed as a result of the update;
+	 * otherwise, false.
+	 */
+	public boolean updateBackpropagationStrategy(Game game)
+	{
+		BackpropagationStrategy old = backpropagationStrategy;
+		
+		for (BackpropagationStrategy strategy: parameters.backpropagationStrategies)
+		{
+			if (strategy.isActive(game))
+			{
+				backpropagationStrategy = strategy;
+				return old != strategy;
+			}
+		}
+		
+		return false;
+	}
+	
 	
 	/**
 	 * Run the selection phase on the tree.
@@ -33,11 +105,12 @@ public class GameTree
 		boolean died;
 		
 		int startIndex = game.getPacmanCurrentNodeIndex();
+		node.visitCount++;
 		
 		while (!node.isLeafNode())
 		{
 			//select a child according to our strategy
-			node = selectionStrategy.selectChild( node);
+			node = parameters.selectionStrategy.selectChild( node);
 			
 			//play the move that the node represents
 			died = game.playMove(node.move);
@@ -48,23 +121,27 @@ public class GameTree
 				node = node.parent;
 				break;
 			}
+			
+			node.visitCount++;
 		}
 		
 		//expand if we're at a leaf, the expansion threshold has been reached,
 		//and we're not past the maximum depth
-		double pathlength = game.getDistanceFromPoint(startIndex);
+		//double pathlength = game.getDistanceFromPoint(startIndex);
 				
-		if (node.isLeafNode() && node.visitCount > expansionThreshold && pathlength > maxPathLength)
+		if (node.isLeafNode())// && node.visitCount > parameters.expansionThreshold && pathlength < parameters.maxPathLength)
 		{
 			//add the children to the node
 			expand(node);
 			
 			//pick a child and play it
-			node = selectionStrategy.selectChild( node);
+			node = parameters.selectionStrategy.selectChild( node);
 			died = game.playMove(node.move);
 			
 			if (died)
 				node = node.parent;
+			else
+				node.visitCount++;
 		}
 		
 		return node;
@@ -107,10 +184,11 @@ public class GameTree
 		int starttime = state.getCurrentLevelTime();
 		int pills = state.getNumberOfActivePills();
 		int ghostscore = 0;
+		int gamescore = state.getScore();
 		
 		while (!isStoppingCondition(lives, level, starttime))
 		{
-			state.advanceGame(pacmanController.getMove(state, 0), ghostController.getMove(state, 0));
+			state.advanceGame(parameters.pacmanController.getMove(state, 0), parameters.ghostController.getMove(state, 0));
 			ghostscore += state.getNumGhostsEaten();
 		}
 		
@@ -127,7 +205,7 @@ public class GameTree
 		int survived = state.getPacmanNumberOfLivesRemaining() < lives ? 0 : 1;
 		
 		//backpropagate the score according to whatever strategy is active
-		backpropagationStrategy.backpropagate(node, survived, pillscore, ghostscore);
+		backpropagationStrategy.backpropagate(node, survived, pillscore, ghostscore, state.getScore() - gamescore);
 	}
 	
 	
@@ -136,7 +214,7 @@ public class GameTree
 	{
 		return state.getPacmanNumberOfLivesRemaining() < lives
 			 || state.getCurrentLevel() != level
-			 || state.getCurrentLevelTime() - starttime > maxRolloutTime
+			 || state.getCurrentLevelTime() - starttime > parameters.maxRolloutTime
 			 || state.gameOver();
 	}
 }

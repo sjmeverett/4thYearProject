@@ -1,6 +1,7 @@
 package pacman.entries.pacman2.mcts;
 
 import java.util.EnumMap;
+import java.util.HashSet;
 
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;
@@ -96,13 +97,24 @@ public class TurnBasedGameAdapter
 	 * Determines if the current game position is a node in the graph; i.e., if it is a Pac-Man decision point (or game over).
 	 * @return
 	 */
-	private boolean isAtNode()
+	public boolean isAtNode()
 	{
 		int nodeIndex = game.getPacmanCurrentNodeIndex();
+		boolean powerpill = false;
+		
+		for (int index: game.getActivePowerPillsIndices())
+		{
+			if (index == nodeIndex)
+			{
+				powerpill = true;
+				break;
+			}
+		}
 		
 		return game.gameOver() 
 			|| game.isJunction(nodeIndex)
-			|| game.isPowerPillStillAvailable(nodeIndex)
+			//|| game.isPowerPillStillAvailable(nodeIndex)
+			|| powerpill
 			|| againstWall();
 	}
 	

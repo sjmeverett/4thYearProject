@@ -43,7 +43,7 @@ public class MyPacMan extends Controller<MOVE>
 		timeDue = System.currentTimeMillis() + 40;
 		
 		//TODO: hack, I'll fix this later
-		((NeuralNetworkGhostController)parameters.ghostModel).train(game);
+		//((NeuralNetworkGhostController)parameters.ghostModel).train(game);
 		
 		//System.out.println(timeDue - System.currentTimeMillis());
 		
@@ -88,8 +88,8 @@ public class MyPacMan extends Controller<MOVE>
 		
 		//check if we need to make a decision
 		//if it's the first move, move will already have been assigned a random value
-		if (simulator.isAtNode(lastEdibleScore) && move == MOVE.NEUTRAL)
-		{
+		//if (simulator.isAtNode(lastEdibleScore) && move == MOVE.NEUTRAL)
+		//{
 			//if we're not in real-time mode, run the number of simulations required
 			if (parameters.simulationCount > -1)
 			{
@@ -139,7 +139,7 @@ public class MyPacMan extends Controller<MOVE>
 				//timeBuffer++;
 				System.out.println("Too late!");
 			}
-		}
+		//}
 		
 		//save the edible score so that we can detect if it changes
 		lastEdibleScore = game.getGhostCurrentEdibleScore();

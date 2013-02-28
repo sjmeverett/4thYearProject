@@ -24,6 +24,7 @@ public interface BackpropagationStrategy
 	 * @param survived 1 if Pac-Man survived the simulated game; otherwise, 0.
 	 * @param pillscore The number of pills eaten during the simulated game.
 	 * @param ghostscore The number of ghosts eaten during the simulated game.
+	 * @param gameScore The number of points Pac-Man gained during the rollout.
 	 */
-	void backpropagate(GameNode node, int survived, int pillscore, int ghostscore);
+	void backpropagate(GameNode node, int survived, int pillscore, int ghostscore, int gamescore);
 }
