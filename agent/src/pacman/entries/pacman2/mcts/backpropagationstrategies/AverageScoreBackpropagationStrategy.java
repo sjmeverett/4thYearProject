@@ -18,9 +18,12 @@ public class AverageScoreBackpropagationStrategy implements BackpropagationStrat
 	@Override
 	public void backpropagate(GameNode node, int survived, int pillscore, int ghostscore, int gamescore)
 	{
+		//if (survived == 0)
+		//	gamescore -= 10000;
+		
 		while (node != null)
 		{
-			node.score = ((node.visitCount - 1) * node.score + survived * gamescore) / node.visitCount;
+			node.score = ((node.visitCount - 1) * node.score + gamescore) / node.visitCount;
 			node = node.parent;
 		}
 	}

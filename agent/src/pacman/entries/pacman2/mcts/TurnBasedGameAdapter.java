@@ -100,21 +100,10 @@ public class TurnBasedGameAdapter
 	public boolean isAtNode()
 	{
 		int nodeIndex = game.getPacmanCurrentNodeIndex();
-		boolean powerpill = false;
-		
-		for (int index: game.getActivePowerPillsIndices())
-		{
-			if (index == nodeIndex)
-			{
-				powerpill = true;
-				break;
-			}
-		}
 		
 		return game.gameOver() 
 			|| game.isJunction(nodeIndex)
-			//|| game.isPowerPillStillAvailable(nodeIndex)
-			|| powerpill
+			|| game.isPowerPillStillAvailable(nodeIndex)
 			|| againstWall();
 	}
 	

@@ -42,7 +42,7 @@ public class MyPacMan extends Controller<MOVE>
 		//run mcts
 		while (System.currentTimeMillis() < timedue)
 		{
-			tree.runMCTS(game);
+			tree.runMCTS(game.copy());
 		}
 		
 		//if we're not allowed to reverse, we only return a move if we're at a node
