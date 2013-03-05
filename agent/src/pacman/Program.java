@@ -7,8 +7,8 @@ import pacman.controllers.examples.RandomNonRevPacMan;
 import pacman.entries.pacman.MyPacMan;
 import pacman.entries.pacman.Parameters;
 import pacman.entries.pacman.mcts.backpropagationstrategies.BackpropagationStrategy;
-import pacman.entries.pacman.mcts.backpropagationstrategies.test.AverageScoreBackpropagationStrategy;
-import pacman.entries.pacman.mcts.backpropagationstrategies.test.AverageSurvivalBackpropagationStrategy;
+import pacman.entries.pacman.mcts.backpropagationstrategies.EatingStrategy;
+import pacman.entries.pacman.mcts.backpropagationstrategies.HuntingStrategy;
 import pacman.entries.pacman.mcts.selectionstrategies.LevineUcbSelectionStrategy;
 
 
@@ -22,11 +22,12 @@ public class Program
 		parameters.allowReversing = false;
 		
 		parameters.backpropagationStrategies = new ArrayList<BackpropagationStrategy>();
-		parameters.backpropagationStrategies.add(new AverageScoreBackpropagationStrategy());
+		//parameters.backpropagationStrategies.add(new HuntingStrategy());
+		parameters.backpropagationStrategies.add(new EatingStrategy());
 		
 		parameters.expansionThreshold = 10;
 		parameters.ghostController = new Legacy();
-		parameters.maxPathLength = 20;
+		parameters.maxPathLength = 30;
 		parameters.maxRolloutTime = 100;
 		parameters.pacmanController = new RandomNonRevPacMan();
 		parameters.selectionStrategy = new LevineUcbSelectionStrategy();

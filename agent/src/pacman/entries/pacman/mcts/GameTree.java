@@ -6,8 +6,8 @@ import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 /**
- * Represents the game of Ms Pac-Man in a tree, with a node for each decision
- * point.
+ * Represents the game of Ms Pac-Man in a tree, built using Monte Carlo
+ * tree search, with a node for each decision point.
  */
 public class GameTree
 {
@@ -182,7 +182,8 @@ public class GameTree
 		int lives = state.getPacmanNumberOfLivesRemaining();
 		int level = state.getCurrentLevel();
 		int starttime = state.getCurrentLevelTime();
-		int pills = state.getNumberOfActivePills();
+		int pillscore = state.getNumberOfActivePills();
+		int powerpills = state.getNumberOfActivePowerPills();
 		int ghostscore = 0;
 		int gamescore = state.getScore();
 		
@@ -192,20 +193,24 @@ public class GameTree
 			ghostscore += state.getNumGhostsEaten();
 		}
 		
-		int pillscore;
-		
 		//if the level has completed, our pills eaten count might be wrong
 		//so just make it 100 as a reward for completing the level
 		if (state.getCurrentLevel() != level)
+		{
 			pillscore = 100;
+			powerpills = 0;
+		}
 		else
-			pillscore = pills - state.getNumberOfActivePills();
+		{
+			pillscore -= state.getNumberOfActivePills();
+			powerpills -= state.getNumberOfActivePowerPills();
+		}
 		
 		//survived is 1 if we avoided being eaten, and 0 otherwise
 		int survived = state.getPacmanNumberOfLivesRemaining() < lives ? 0 : 1;
 		
 		//backpropagate the score according to whatever strategy is active
-		backpropagationStrategy.backpropagate(node, survived, pillscore, ghostscore, state.getScore() - gamescore);
+		backpropagationStrategy.backpropagate(node, survived, pillscore, powerpills, ghostscore, state.getScore() - gamescore);
 	}
 	
 	

@@ -37,7 +37,11 @@ public class MyPacMan extends Controller<MOVE>
 			tree = new GameTree(parameters);
 		
 		//allow tactics to change depending on the game state
-		tree.updateBackpropagationStrategy(game);
+		if (tree.updateBackpropagationStrategy(game))
+		{
+			tree = new GameTree(parameters);
+			tree.updateBackpropagationStrategy(game);
+		}
 		
 		//run mcts
 		while (System.currentTimeMillis() < timedue)

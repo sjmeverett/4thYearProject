@@ -14,7 +14,7 @@ public class AverageSurvivalBackpropagationStrategy implements BackpropagationSt
 	}
 
 	@Override
-	public void backpropagate(GameNode node, int survived, int pillscore, int ghostscore, int gamescore)
+	public void backpropagate(GameNode node, int survived, int pillscore, int powerpills, int ghostscore, int gamescore)
 	{
 		while (node != null)
 		{
