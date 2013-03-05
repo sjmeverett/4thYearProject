@@ -1,4 +1,4 @@
-package pacman.entries.pacman2;
+package pacman.entries.pacman;
 
 import pacman.game.Game;
 

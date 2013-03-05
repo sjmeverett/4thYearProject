@@ -1,9 +1,7 @@
-package pacman.entries.pacman2.mcts;
+package pacman.entries.pacman.mcts;
 
-import java.util.ArrayList;
-
-import pacman.entries.pacman2.Parameters;
-import pacman.entries.pacman2.mcts.backpropagationstrategies.BackpropagationStrategy;
+import pacman.entries.pacman.Parameters;
+import pacman.entries.pacman.mcts.backpropagationstrategies.BackpropagationStrategy;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
@@ -129,9 +127,9 @@ public class GameTree
 		
 		//expand if we're at a leaf, the expansion threshold has been reached,
 		//and we're not past the maximum depth
-		//double pathlength = game.getDistanceFromPoint(startIndex);
+		double pathlength = game.getDistanceFromPoint(startIndex);
 				
-		if (node.isLeafNode())// && node.visitCount > parameters.expansionThreshold && pathlength < parameters.maxPathLength)
+		if (node.isLeafNode() && node.visitCount > parameters.expansionThreshold && pathlength < parameters.maxPathLength)
 		{
 			//add the children to the node
 			expand(node);

@@ -1,11 +1,11 @@
-package pacman.entries.pacman2;
+package pacman.entries.pacman;
 
 import java.util.EnumMap;
 import java.util.List;
 
 import pacman.controllers.Controller;
-import pacman.entries.pacman2.mcts.backpropagationstrategies.BackpropagationStrategy;
-import pacman.entries.pacman2.mcts.selectionstrategies.SelectionStrategy;
+import pacman.entries.pacman.mcts.backpropagationstrategies.BackpropagationStrategy;
+import pacman.entries.pacman.mcts.selectionstrategies.SelectionStrategy;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 

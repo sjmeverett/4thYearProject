@@ -1,8 +1,8 @@
-package pacman.entries.pacman2.mcts.selectionstrategies;
+package pacman.entries.pacman.mcts.selectionstrategies;
 
 import java.util.Random;
 
-import pacman.entries.pacman2.mcts.GameNode;
+import pacman.entries.pacman.mcts.GameNode;
 
 /**
  * Provides UCB calculation based on the UCB1 formula found in Levine's paper.

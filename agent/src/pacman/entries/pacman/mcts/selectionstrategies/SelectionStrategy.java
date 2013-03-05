@@ -1,6 +1,6 @@
-package pacman.entries.pacman2.mcts.selectionstrategies;
+package pacman.entries.pacman.mcts.selectionstrategies;
 
-import pacman.entries.pacman2.mcts.GameNode;
+import pacman.entries.pacman.mcts.GameNode;
 
 /**
  * Represents a strategy for selecting a child node of a given game node,

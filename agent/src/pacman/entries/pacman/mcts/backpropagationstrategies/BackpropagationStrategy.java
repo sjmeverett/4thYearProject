@@ -1,6 +1,6 @@
-package pacman.entries.pacman2.mcts.backpropagationstrategies;
+package pacman.entries.pacman.mcts.backpropagationstrategies;
 
-import pacman.entries.pacman2.mcts.GameNode;
+import pacman.entries.pacman.mcts.GameNode;
 import pacman.game.Game;
 
 /**

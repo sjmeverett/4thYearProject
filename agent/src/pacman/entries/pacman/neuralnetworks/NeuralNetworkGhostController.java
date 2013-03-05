@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import pacman.controllers.Controller;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.RouletteMoveSelectionStrategy;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;

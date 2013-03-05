@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import pacman.controllers.examples.Legacy;
 import pacman.controllers.examples.RandomNonRevPacMan;
-import pacman.entries.pacman2.MyPacMan;
-import pacman.entries.pacman2.Parameters;
-import pacman.entries.pacman2.mcts.backpropagationstrategies.AverageScoreBackpropagationStrategy;
-import pacman.entries.pacman2.mcts.backpropagationstrategies.AverageSurvivalBackpropagationStrategy;
-import pacman.entries.pacman2.mcts.backpropagationstrategies.BackpropagationStrategy;
-import pacman.entries.pacman2.mcts.selectionstrategies.LevineUcbSelectionStrategy;
+import pacman.entries.pacman.MyPacMan;
+import pacman.entries.pacman.Parameters;
+import pacman.entries.pacman.mcts.backpropagationstrategies.BackpropagationStrategy;
+import pacman.entries.pacman.mcts.backpropagationstrategies.test.AverageScoreBackpropagationStrategy;
+import pacman.entries.pacman.mcts.backpropagationstrategies.test.AverageSurvivalBackpropagationStrategy;
+import pacman.entries.pacman.mcts.selectionstrategies.LevineUcbSelectionStrategy;
 
 
 public class Program
@@ -17,14 +17,7 @@ public class Program
 	public static void main(String[] args)
 	{
 		Executor executor = new Executor();
-		
-//		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
-//		parameters.moveSelectionStrategy = new RouletteMoveSelectionStrategy();
-//		parameters.nodeExpansionThreshold = 3;
-//		//parameters.ghostModel = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
-//		//parameters.opponent = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
-//		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
-		
+
 		Parameters parameters = new Parameters();
 		parameters.allowReversing = false;
 		

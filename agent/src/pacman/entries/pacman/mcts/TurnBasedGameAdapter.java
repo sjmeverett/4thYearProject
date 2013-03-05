@@ -1,7 +1,6 @@
-package pacman.entries.pacman2.mcts;
+package pacman.entries.pacman.mcts;
 
 import java.util.EnumMap;
-import java.util.HashSet;
 
 import pacman.controllers.Controller;
 import pacman.game.Constants.DM;

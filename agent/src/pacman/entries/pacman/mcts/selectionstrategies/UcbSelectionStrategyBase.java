@@ -1,7 +1,8 @@
-package pacman.entries.pacman2.mcts.selectionstrategies;
+package pacman.entries.pacman.mcts.selectionstrategies;
 
 import java.util.List;
-import pacman.entries.pacman2.mcts.GameNode;
+
+import pacman.entries.pacman.mcts.GameNode;
 
 public abstract class UcbSelectionStrategyBase implements SelectionStrategy
 {

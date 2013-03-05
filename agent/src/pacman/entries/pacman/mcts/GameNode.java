@@ -1,8 +1,7 @@
-package pacman.entries.pacman2.mcts;
+package pacman.entries.pacman.mcts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;

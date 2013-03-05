@@ -1,4 +1,4 @@
-package pacman.entries.pacman.neuralnetworks;
+package pacman.entries.pacman.neuralnetworks.moveselectionstrategies;
 
 import pacman.game.Constants.MOVE;
 
