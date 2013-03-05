@@ -104,13 +104,15 @@ public class GameTree
 		GameNode node = root;
 		boolean died;
 		
+		game.advanceGameToNextNode();
+		
 		int startIndex = game.getPacmanCurrentNodeIndex();
 		node.visitCount++;
 		
 		while (!node.isLeafNode())
 		{
 			//select a child according to our strategy
-			node = parameters.selectionStrategy.selectChild( node);
+			node = parameters.selectionStrategy.selectChild(node);
 			
 			//play the move that the node represents
 			died = game.playMove(node.move);

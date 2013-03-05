@@ -39,10 +39,6 @@ public class TurnBasedGameAdapter
 	{
 		int lives = game.getPacmanNumberOfLivesRemaining();
 		
-		//we should be at a decision point before making a decision
-		if (!isAtNode())
-			advanceGameToNextNode();
-		
 		//play the move that the node represents
 		game.advanceGame(move, ghostController.getMove(game, 0));
 		
@@ -79,7 +75,7 @@ public class TurnBasedGameAdapter
 	 * @param ghostModel The controller to use to model the ghost's behaviour.
 	 * @return True if Ms Pac-Man made it to the next node without being eaten; otherwise, false.
 	 */
-	private void advanceGameToNextNode()
+	public void advanceGameToNextNode()
 	{
 		MOVE move = game.getPacmanLastMoveMade();
 
