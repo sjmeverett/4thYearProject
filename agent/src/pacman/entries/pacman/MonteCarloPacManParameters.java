@@ -10,9 +10,9 @@ import pacman.entries.pacman.evaluators.ITreeEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillActiveEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillDistanceEvaluator;
 import pacman.entries.pacman.neuralnetworks.GhostNeuralNetwork;
-import pacman.entries.pacman.neuralnetworks.MaxMoveSelectionStrategy;
-import pacman.entries.pacman.neuralnetworks.MoveSelectionStrategy;
 import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MaxMoveSelectionStrategy;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
 import pacman.entries.pacman.selectionpolicies.ISelectionPolicy;
 import pacman.entries.pacman.selectionpolicies.LevineUcbSelectionPolicy;
 import pacman.game.Constants.GHOST;
@@ -105,80 +105,9 @@ public class MonteCarloPacManParameters
 	 * as eating ghosts isn't deterministic unless you take ghost positions into account.
 	 */
 	public boolean eatGhostNode;
-	
-	/**
-	 * The strategy to use when selecting a ghost move to play in the ghost neural networks.
-	 */
-	public MoveSelectionStrategy moveSelectionStrategy;
-	
+
 	/**
 	 * The neural network ghost controller, if there is one.
 	 */
-	public NeuralNetworkGhostController ghostnet;
-	
-	
-	/**
-	 * Constructor.  Sets default values for the parameters.
-	 */
-	public MonteCarloPacManParameters()
-	{
-		nodeExpansionThreshold = 30;
-		maximumSimulationLength = 10000000;
-		deathPenalty = 10000;
-		scaleDeathPenalty = false;
-		completionReward = 10000;
-		pacManModel = new StarterPacMan();
-		ghostModel = new Legacy();
-		selectionPolicy = new LevineUcbSelectionPolicy(4000);
-		additionalEvaluators = new ITreeEvaluator[] { new DistanceToOpportunityEvaluator(), new PowerPillDistanceEvaluator(), new PowerPillActiveEvaluator() };
-		discardTreeOnDecision = true;
-		opponent = new Legacy();
-		simulationCount = -1;
-		showGraph = false;
-		useGhostPositions = false;
-		eatGhostNode = true;
-		moveSelectionStrategy = new MaxMoveSelectionStrategy();
-		
-		/*nodeExpansionThreshold = 50;
-		maximumSimulationLength = 10000000;
-		deathPenalty = 10000;
-		scaleDeathPenalty = false;
-		completionReward = 10000;
-		pacManModel = new StarterPacMan();
-		ghostModel = new Legacy2TheReckoning();
-		selectionPolicy = new LevineUcbSelectionPolicy(4000);
-		additionalEvaluators = new ITreeEvaluator[] { new DistanceToOpportunityEvaluator(), new PowerPillDistanceEvaluator(), new PowerPillActiveEvaluator() };
-		discardTreeOnDecision = true;
-		opponent = new Legacy();
-		simulationCount = -1;
-		showGraph = false;
-		useGhostPositions = true;
-		eatGhostNode = false;*/
-	}
-	
-	
-	/**
-	 * Returns an exact copy of the parameters object, with the pacManModel and ghostModel being new instances of the original types.
-	 * @return
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 */
-	public MonteCarloPacManParameters copy() throws IllegalAccessException, InstantiationException
-	{
-		MonteCarloPacManParameters p = new MonteCarloPacManParameters();
-		p.nodeExpansionThreshold = nodeExpansionThreshold;
-		p.maximumSimulationLength = maximumSimulationLength;
-		p.deathPenalty = deathPenalty;
-		p.scaleDeathPenalty = scaleDeathPenalty;
-		p.completionReward = completionReward;
-		p.pacManModel = pacManModel.getClass().newInstance();
-		p.ghostModel = ghostModel.getClass().newInstance();
-		p.selectionPolicy = selectionPolicy;
-		p.additionalEvaluators = additionalEvaluators;
-		p.discardTreeOnDecision = discardTreeOnDecision;
-		p.experimentName = experimentName;
-		p.opponent = opponent.getClass().newInstance();
-		p.moveSelectionStrategy = moveSelectionStrategy;
-		return p;
-	}
+	public NeuralNetworkGhostController neuralNetwork;
 }

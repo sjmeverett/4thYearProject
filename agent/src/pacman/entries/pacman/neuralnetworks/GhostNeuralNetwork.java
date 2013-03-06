@@ -1,6 +1,7 @@
 package pacman.entries.pacman.neuralnetworks;
 
 import pacman.entries.pacman.GhostState;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;

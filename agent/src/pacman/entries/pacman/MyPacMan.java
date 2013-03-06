@@ -45,8 +45,8 @@ public class MyPacMan extends Controller<MOVE>
 			timeDue = System.currentTimeMillis() + 40;
 		
 		//if there's a ghost network to train, train it
-		if (parameters.ghostnet != null)
-			parameters.ghostnet.train(game);
+		if (parameters.neuralNetwork != null)
+			parameters.neuralNetwork.train(game);
 		
 		//System.out.println(timeDue - System.currentTimeMillis());
 		

@@ -4,7 +4,7 @@ import pacman.controllers.examples.Legacy2TheReckoning;
 import pacman.entries.pacman.MonteCarloPacManParameters;
 import pacman.entries.pacman.MyPacMan;
 import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
-import pacman.entries.pacman.neuralnetworks.RouletteMoveSelectionStrategy;
+import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.RouletteMoveSelectionStrategy;
 
 public class Program
 {
@@ -14,9 +14,9 @@ public class Program
 		
 		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
 		parameters.nodeExpansionThreshold = 30;
-		parameters.moveSelectionStrategy = new RouletteMoveSelectionStrategy();
-		parameters.ghostnet = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
-		parameters.ghostModel = parameters.ghostnet;
+		//parameters.moveSelectionStrategy = new RouletteMoveSelectionStrategy();
+		//parameters.ghostnet = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
+		parameters.ghostModel = parameters.neuralNetwork;
 		parameters.opponent = new Legacy2TheReckoning();
 		//parameters.opponent = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
 		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
