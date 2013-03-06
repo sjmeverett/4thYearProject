@@ -40,10 +40,13 @@ public class MyPacMan extends Controller<MOVE>
 	public MOVE getMove(Game game, long timeDue) 
 	{
 		MOVE move = MOVE.NEUTRAL;
-		timeDue = System.currentTimeMillis() + 40;
 		
-		//TODO: hack, I'll fix this later
-		((NeuralNetworkGhostController)parameters.ghostModel).train(game);
+		if (timeDue == -1)
+			timeDue = System.currentTimeMillis() + 40;
+		
+		//if there's a ghost network to train, train it
+		if (parameters.ghostnet != null)
+			parameters.ghostnet.train(game);
 		
 		//System.out.println(timeDue - System.currentTimeMillis());
 		
@@ -136,7 +139,7 @@ public class MyPacMan extends Controller<MOVE>
 			if (System.currentTimeMillis() > timeDue)
 			{
 				//oops, too late: increase the time buffer so we're not late next time
-				//timeBuffer++;
+				timeBuffer++;
 				System.out.println("Too late!");
 			}
 		}

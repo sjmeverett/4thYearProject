@@ -9,8 +9,10 @@ import pacman.entries.pacman.evaluators.DistanceToOpportunityEvaluator;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillActiveEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillDistanceEvaluator;
+import pacman.entries.pacman.neuralnetworks.GhostNeuralNetwork;
 import pacman.entries.pacman.neuralnetworks.MaxMoveSelectionStrategy;
 import pacman.entries.pacman.neuralnetworks.MoveSelectionStrategy;
+import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
 import pacman.entries.pacman.selectionpolicies.ISelectionPolicy;
 import pacman.entries.pacman.selectionpolicies.LevineUcbSelectionPolicy;
 import pacman.game.Constants.GHOST;
@@ -109,6 +111,11 @@ public class MonteCarloPacManParameters
 	 */
 	public MoveSelectionStrategy moveSelectionStrategy;
 	
+	/**
+	 * The neural network ghost controller, if there is one.
+	 */
+	public NeuralNetworkGhostController ghostnet;
+	
 	
 	/**
 	 * Constructor.  Sets default values for the parameters.
@@ -128,7 +135,7 @@ public class MonteCarloPacManParameters
 		opponent = new Legacy();
 		simulationCount = -1;
 		showGraph = false;
-		useGhostPositions = true;
+		useGhostPositions = false;
 		eatGhostNode = true;
 		moveSelectionStrategy = new MaxMoveSelectionStrategy();
 		

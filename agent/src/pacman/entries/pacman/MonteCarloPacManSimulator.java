@@ -165,7 +165,9 @@ public class MonteCarloPacManSimulator
 			//the first node is the root node
 			GameNode node = rootNode;
 			visitedNodes.add(node);
-			advanceGameToNextNode();
+			
+			if (!isAtNode(game.getGhostCurrentEdibleScore()))
+				advanceGameToNextNode();
 			
 			//select the child representing the move played by the ghost team model
 			if (parameters.useGhostPositions)

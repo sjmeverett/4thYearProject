@@ -12,13 +12,15 @@ import pacman.game.Game;
 public class GhostNeuralNetwork
 {
 	private static final double LEARNING_RATE = 1;
-	private static final int ITERATIONS = 200;
 	private static final int HIDDEN_UNITS = 10;
 	
 	private NeuralNetwork network;
 	private GHOST ghost;
 	private GhostState state;
 	private MoveSelectionStrategy selectionStrategy;
+	
+	private double[] x, y;
+	private int i;
 	
 	/**
 	 * Constructor.
@@ -52,13 +54,17 @@ public class GhostNeuralNetwork
 	 * Trains the network with the game state.
 	 * @param game
 	 */
-	public void train(Game game)
+	public void train(Game game, int iterations)
 	{
 		if (state != null && state.requiresAction)
 		{
-			double[] x = state.toArray();
-			double[] y = state.getDirection(game);
-			network.train(x, y, LEARNING_RATE, ITERATIONS);
+			x = state.toArray();
+			y = state.getDirection(game);
+		}
+			
+		if (y != null)
+		{
+			network.train(x, y, LEARNING_RATE, iterations);
 		}
 		
 		state = new GhostState(game, ghost);

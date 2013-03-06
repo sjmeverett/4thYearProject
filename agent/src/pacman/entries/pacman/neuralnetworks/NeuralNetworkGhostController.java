@@ -15,9 +15,11 @@ import pacman.game.Game;
 public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE>>
 {
 	private Map<GHOST, GhostNeuralNetwork> networks;
+	private int iterations;
 	
-	public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy)
+	public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy, int iterations)
 	{
+		this.iterations = iterations;
 		networks = new HashMap<GHOST, GhostNeuralNetwork>();
 		
 		for (GHOST ghost: GHOST.values())
@@ -76,7 +78,7 @@ public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE
 	{
 		for (GHOST ghost: GHOST.values())
 		{
-			networks.get(ghost).train(game);
+			networks.get(ghost).train(game, iterations);
 		}
 	}
 }
