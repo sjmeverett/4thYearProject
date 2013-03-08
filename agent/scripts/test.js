@@ -1,6 +1,6 @@
 
 nodeExpansionThreshold = 30;
-maxmimumSimulationLength = -1;
+maximumSimulationLength = -1;
 deathPenalty = 10000;
 scaleDeathPenalty = false;
 completionReward = 10000;

@@ -9,7 +9,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import pacman.controllers.Controller;
-import pacman.entries.pacman.MonteCarloPacManParameters;
+import pacman.entries.pacman.Parameters;
 import pacman.entries.pacman.MyPacMan;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -37,7 +37,7 @@ public class ExperimentRunner
 	 */
 	public int run(String script) throws ScriptException
 	{
-		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
+		Parameters parameters = new Parameters();
 		engine.put("parameters", parameters);
 		
 		engine.eval(
@@ -60,7 +60,7 @@ public class ExperimentRunner
 	 * @param parameters
 	 * @return The final score of the game.
 	 */
-	public int run(MonteCarloPacManParameters parameters)
+	public int run(Parameters parameters)
 	{
 		Random random = new Random();
 		Game game = new Game(random.nextLong());

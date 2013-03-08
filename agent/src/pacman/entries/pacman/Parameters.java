@@ -4,15 +4,8 @@ import java.util.EnumMap;
 
 import pacman.controllers.Controller;
 import pacman.controllers.examples.Legacy;
-import pacman.controllers.examples.StarterPacMan;
-import pacman.entries.pacman.evaluators.DistanceToOpportunityEvaluator;
+import pacman.controllers.examples.RandomNonRevPacMan;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
-import pacman.entries.pacman.evaluators.PowerPillActiveEvaluator;
-import pacman.entries.pacman.evaluators.PowerPillDistanceEvaluator;
-import pacman.entries.pacman.neuralnetworks.ghosts.GhostNeuralNetwork;
-import pacman.entries.pacman.neuralnetworks.ghosts.NeuralNetworkGhostController;
-import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MaxMoveSelectionStrategy;
-import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
 import pacman.entries.pacman.selectionpolicies.ISelectionPolicy;
 import pacman.entries.pacman.selectionpolicies.LevineUcbSelectionPolicy;
 import pacman.game.Constants.GHOST;
@@ -21,7 +14,7 @@ import pacman.game.Constants.MOVE;
 /**
  * Represents a set of parameters for Monte Carlo simulations of the Ms Pac-Man game.
  */
-public class MonteCarloPacManParameters
+public class Parameters
 {
 	/**
 	 * The number of times a node has to be sampled before being expanded.
@@ -110,4 +103,22 @@ public class MonteCarloPacManParameters
 	 * The list of tasks to run each game tick.
 	 */
 	public GameTask[] tasks;
+	
+	
+	public Parameters()
+	{
+		nodeExpansionThreshold = 30;
+		maximumSimulationLength = 2000;
+		deathPenalty = 10000;
+		scaleDeathPenalty = false;
+		completionReward = 10000;
+		pacManModel = new RandomNonRevPacMan();
+		ghostModel = new Legacy();
+		selectionPolicy = new LevineUcbSelectionPolicy(4000);
+		discardTreeOnDecision = true;
+		opponent = new Legacy();
+		simulationCount = -1;
+		useGhostPositions = false;
+		eatGhostNode = false;
+	}
 }

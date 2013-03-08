@@ -19,13 +19,13 @@ public class MyPacMan extends Controller<MOVE>
 	private int lastEdibleScore;
 	
 	private MonteCarloPacManSimulator simulator;
-	private MonteCarloPacManParameters parameters;
+	private Parameters parameters;
 	
 	/**
 	 * Constructor.
 	 * @param parameters Parameters governing various aspects of the algorithms used.
 	 */
-	public MyPacMan(MonteCarloPacManParameters parameters)
+	public MyPacMan(Parameters parameters)
 	{
 		this.parameters = parameters;
 	}
@@ -33,7 +33,7 @@ public class MyPacMan extends Controller<MOVE>
 	
 	public MyPacMan()
 	{
-		this(new MonteCarloPacManParameters());
+		this(new Parameters());
 	}
 	
 

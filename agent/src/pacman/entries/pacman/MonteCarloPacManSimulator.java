@@ -19,7 +19,7 @@ import pacman.game.Game;
 public class MonteCarloPacManSimulator
 {
 	private Game game;
-	private MonteCarloPacManParameters parameters;
+	private Parameters parameters;
 	private Set<Integer> activePowerPills;
 	private GameNode rootNode;
 	private Stack<Game> gameStates;
@@ -31,7 +31,7 @@ public class MonteCarloPacManSimulator
 	 * @param ghostModel The model to use for ghost behaviour during the simulations.
 	 * @param parameters An object describing the parameters to the simulation.
 	 */
-	public MonteCarloPacManSimulator(Game game, MonteCarloPacManParameters parameters)
+	public MonteCarloPacManSimulator(Game game, Parameters parameters)
 	{
 		this.game = game;
 		this.parameters = parameters;

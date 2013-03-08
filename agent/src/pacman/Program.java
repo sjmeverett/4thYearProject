@@ -1,24 +1,20 @@
 package pacman;
 
-import pacman.controllers.examples.Legacy2TheReckoning;
-import pacman.entries.pacman.MonteCarloPacManParameters;
+import pacman.controllers.examples.AggressiveGhosts;
+import pacman.entries.pacman.GameTask;
 import pacman.entries.pacman.MyPacMan;
-import pacman.entries.pacman.neuralnetworks.ghosts.NeuralNetworkGhostController;
-import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.RouletteMoveSelectionStrategy;
+import pacman.entries.pacman.Parameters;
+import pacman.entries.pacman.logging.GhostTeamLogger;
 
 public class Program
 {
 	public static void main(String[] args)
 	{
-		Executor executor = new Executor();
+		Parameters parameters = new Parameters();
+		parameters.ghostModel = new AggressiveGhosts();
+		parameters.tasks = new GameTask[] { new GhostTeamLogger("AggressiveGhosts") };
 		
-		MonteCarloPacManParameters parameters = new MonteCarloPacManParameters();
-		parameters.nodeExpansionThreshold = 30;
-		//parameters.moveSelectionStrategy = new RouletteMoveSelectionStrategy();
-		//parameters.ghostnet = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
-		parameters.ghostModel = parameters.neuralNetwork;
-		parameters.opponent = new Legacy2TheReckoning();
-		//parameters.opponent = new NeuralNetworkGhostController("weights/PINKY.dat", "weights/INKY.dat", "weights/BLINKY.dat", "weights/SUE.dat");
+		Executor executor = new Executor();
 		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
 	}
 }
