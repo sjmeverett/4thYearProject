@@ -9,8 +9,8 @@ import pacman.entries.pacman.evaluators.DistanceToOpportunityEvaluator;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillActiveEvaluator;
 import pacman.entries.pacman.evaluators.PowerPillDistanceEvaluator;
-import pacman.entries.pacman.neuralnetworks.GhostNeuralNetwork;
-import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
+import pacman.entries.pacman.neuralnetworks.ghosts.GhostNeuralNetwork;
+import pacman.entries.pacman.neuralnetworks.ghosts.NeuralNetworkGhostController;
 import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MaxMoveSelectionStrategy;
 import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
 import pacman.entries.pacman.selectionpolicies.ISelectionPolicy;
@@ -105,9 +105,9 @@ public class MonteCarloPacManParameters
 	 * as eating ghosts isn't deterministic unless you take ghost positions into account.
 	 */
 	public boolean eatGhostNode;
-
+	
 	/**
-	 * The neural network ghost controller, if there is one.
+	 * The list of tasks to run each game tick.
 	 */
-	public NeuralNetworkGhostController neuralNetwork;
+	public GameTask[] tasks;
 }

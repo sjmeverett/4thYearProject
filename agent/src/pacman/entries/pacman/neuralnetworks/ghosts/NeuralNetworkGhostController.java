@@ -1,16 +1,17 @@
-package pacman.entries.pacman.neuralnetworks;
+package pacman.entries.pacman.neuralnetworks.ghosts;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 import pacman.controllers.Controller;
+import pacman.entries.pacman.GameTask;
 import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.MoveSelectionStrategy;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE>>
+public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE>> implements GameTask
 {
 	private Map<GHOST, GhostNeuralNetwork> networks;
 	private int iterations;
@@ -50,7 +51,8 @@ public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE
 	}
 	
 	
-	public void train(Game game)
+	@Override
+	public void run(Game game)
 	{
 		for (GHOST ghost: GHOST.values())
 		{

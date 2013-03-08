@@ -1,4 +1,4 @@
-package pacman.entries.pacman.neuralnetworks;
+package pacman.entries.pacman.neuralnetworks.ghosts;
 
 /**
  * Since we can't have data files in the competition, this class provides access

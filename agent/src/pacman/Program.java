@@ -3,7 +3,7 @@ package pacman;
 import pacman.controllers.examples.Legacy2TheReckoning;
 import pacman.entries.pacman.MonteCarloPacManParameters;
 import pacman.entries.pacman.MyPacMan;
-import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
+import pacman.entries.pacman.neuralnetworks.ghosts.NeuralNetworkGhostController;
 import pacman.entries.pacman.neuralnetworks.moveselectionstrategies.RouletteMoveSelectionStrategy;
 
 public class Program

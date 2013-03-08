@@ -1,4 +1,4 @@
-package pacman.entries.pacman;
+package pacman.entries.pacman.logging;
 
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;

@@ -1,4 +1,4 @@
-package pacman.entries.pacman;
+package pacman.entries.pacman.logging;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,15 +15,13 @@ public class GhostLogger
 	private BufferedWriter writer;
 	private GhostState lastState;
 	
-	public GhostLogger(GHOST ghost)
+	public GhostLogger(GHOST ghost, String controller)
 	{
 		this.ghost = ghost;
-		
-		Date date = new Date();
-		
+
 		try
 		{
-			writer = new BufferedWriter(new FileWriter(String.format("logs/%s.txt", ghost.name())));
+			writer = new BufferedWriter(new FileWriter(String.format("logs/%s-%s.txt", controller, ghost.name())));
 		}
 		catch (IOException ex)
 		{

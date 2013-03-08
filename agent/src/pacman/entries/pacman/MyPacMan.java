@@ -4,7 +4,7 @@ import java.util.Random;
 
 import pacman.controllers.Controller;
 import pacman.entries.pacman.evaluators.ITreeEvaluator;
-import pacman.entries.pacman.neuralnetworks.NeuralNetworkGhostController;
+import pacman.entries.pacman.neuralnetworks.ghosts.NeuralNetworkGhostController;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
@@ -44,9 +44,14 @@ public class MyPacMan extends Controller<MOVE>
 		if (timeDue == -1)
 			timeDue = System.currentTimeMillis() + 40;
 		
-		//if there's a ghost network to train, train it
-		if (parameters.neuralNetwork != null)
-			parameters.neuralNetwork.train(game);
+		//if there's any tasks to run, run them
+		if (parameters.tasks != null)
+		{
+			for (GameTask task: parameters.tasks)
+			{
+				task.run(game);
+			}
+		}
 		
 		//System.out.println(timeDue - System.currentTimeMillis());
 		
