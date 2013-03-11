@@ -1,6 +1,14 @@
 \documentclass[pdftex,12pt,a4paper]{report}
 
+\usepackage{natbib}
+\bibliographystyle{agsm}
+\renewcommand{\bibsection}{\appendix\chapter{\refname}}
+
 \usepackage{url}
+% I'm not completely sure what this does...
+% http://tex.stackexchange.com/questions/9445/urls-break-compilation
+\renewcommand{\harvardurl}[1]{\textbf{URL:} \url{#1}}
+
 \usepackage[pdftex]{graphicx}
 \usepackage{todonotes}
 
@@ -28,10 +36,6 @@
 \include{results}
 \include{summary}
 
-\appendix
-\chapter{References}
-
-\bibliographystyle{plain}
 \bibliography{thesis}
 
 \include{detailedspec}
