@@ -76,7 +76,30 @@ One of the earliest known studies into Ms~Pac-Man was conducted by \citet{Koza19
 
 For each of the states, the agent has a set of parameterised probabilistic rules; the parameters are learned using the population-based incremental learning (PBIL) algorithm.  The agent was able to learn the parameters and showed some success, however the authors note that it may be infeasible to scale their approach up to the full game.
 
-\citet{Sizta2007}
+\todo[inline]{Finish related work section}
+
+\citet{Me2012} developed an agent using Monte Carlo tree search as part of an ensemble approach.  Prior to making a decision, any number of registered \emph{evaluators} are allowed to run to modify the results of the MCTS algorithm.  For example, a simple evalutor could spot moves in the game tree which eat power pills when there is already one active, and apply penalties to the scores of those nodes.  Thus, short- and long-range planning components augment the mid-range planning provided by the MCTS algorithm.
+
+Although traditional MCTS utilises random playouts, the agent described in the behaviour uses more intelligent agents to control the playout behaviour, as this was found to have better results.  The paper explores two cases: the case where the model of the ghost behaviour used in the playouts matches the actual ghost controller being played against, and the case where the controllers differ.  In the former, three out of the four evaluator configurations considered were found to improve the score by a statistically significant amount, whilst the latter showed a significant improvement for only one evaluator.  Over all, the scores for the accurate model case were in the region of 50,000-60,000, a great deal more than the 10,000-15,000 achieved by the inaccuarate model.
+
+Clearly accurate domain knowledge improves the performance of the agent.  If the controller used during the playouts could adapt its behaviour based on observations of the controller being played against, one could reasonably expect the agent performance to steadily improve as the simulation model starts to more closely match the opponent controller.  This is the essence of this project.
 
 \section{Neural networks}
 
+Neural networks are modeled after the nervous system in humans and animals.  This is composed of (in humans, many billions of) cells called \emph{neurons}.  A wide variety of morphologies exist, but the majority of neurons consist of the same three parts: the \emph{dendrites}, highly branched structures which receive chemical signals from other nearby neurons; the \emph{cell body}, which contains the processes necessary for cell function; and the \emph{axon}, containing a ``trigger zone'' which generates electrical signals over the length of the axon if the input to the dendrites reaches a certain threshold.  The axon has \emph{axon terminals} at the opposite end to the dendrites and cell body; these transmit chemical messengers into the dendrites of connected neurons in response to an electrical impulse.  Neurons can be seen as \emph{integrators} as their output is a function of the inputs received from the many connected neurons \cite[p. 152]{Vander}.
+
+Artifical neural networks also consist of large numbers of ``neurons''.  In general, these have a high-dimensional input vector and produce an output which is a non-linear \emph{activation} function (often a sigmoid function) of the input vector and some weights vector \cite[p. 1]{Annema1995}.  It can readily be appreciated how this is analagous to the biological system: the input vector represents the many incoming connections to the dendrites, while the ``trigger zone'' and axon terminals are represented by the activation function and its output.
+
+Each element of the input vector is multipled by a corresponding element in the weights vector before being summed and used as the input to the activation function; thus, the weights vector controls how much each input affects the output of the neuron.  The weights are adjusted in a \emph{training phase}: by using a large number of training examples where the output expected of the neuron is known, the weights can be iteratively modified according to a learning rule which seeks to minimise the error between the actual output of the neuron and the expected output for each training example \cite[p. 1]{Annema1995}.  This is a form of \emph{supervised learning} \todo{read R and N for supervised learning}.
+
+Although the exact mechanism of learning in the brain is not fully understood, it is thought to operate along similar lines.  In the \emph{long-term potentiation} model, the connections between neurons (called \emph{synapses}) increase in effectiveness when heavily used \cite[p. 271]{Vander}, which is similar in function to the weights which govern the connections between artificial neurons changing value.
+
+\todo[inline]{Add something from Rumelhart et al (D153.4 PAR)}
+
+The type of artificial neural network used in this work is the two-layer feed-forward network \cite[p. 4]{Aleksander1995}.  This consists of a layer of neurons called the \emph{hidden layer}, which computes some internal representation of the inputs \cite[p. 135]{Aleksander1995}, and a connected \emph{output layer}, which computes the final result of the neural network as a function of the output from the hidden layer.  The term "feed-forward" refer to the fact that the input is passed first to the hidden layer, and then fed forward to the output layer.  It has been shown that such a network is capable of approximating any function \cite[p. 10]{Annema1995}.
+
+\todo[inline]{Maybe add Kolmogrov's theorem (p. 10 of Annema) and comment from p. 135 of Aleksander et al}
+
+\subsection{Backpropagation algorithm}
+
+The use of a hidden layer introduces a problem---the expected output for the hidden layer is not known, and so some method must exist for propagating the errors from the output layer in order to train the weights in the hidden layer.  The algorithm used for this purpose in this work is the backpropagation algorithm \cite[p. 134-149]{Aleksander1995}.
