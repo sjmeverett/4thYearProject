@@ -3,19 +3,23 @@
 
 \section{The current agent}
 
-The Ms Pac-Man vs Ghosts framework provides the base implementation of the game for this project: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must subclass {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Pac-Man, while ghost controllers subclass {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
+The Ms Pac-Man vs Ghosts framework provides the base implementation of the game for this project: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must extend {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Pac-Man, while ghost controllers extend {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
 
 The framework calls the {\tt getMove} method every 40~ms; if the method takes longer than that time to run, its return value is discarded and the last move returned by the function is selected.  Thus, the method has a strict requirement on running time.
 
 \citet{Me2012} implemented an agent which used Monte Carlo tree search.  It makes use of a class called {\tt MonteCarloPacManSimulator} (henceforth referred to as the simulator class) which runs simulated games and builds a game tree representation using MCTS.  The agent repeatedly calls on the simulator class to run iterations of MCTS while there is still time remaining.  Once near the deadline, no more simulations are performed: if the agent is at a decision point, i.e., a junction, wall or power pill, the best move found by the MCTS is returned; otherwise, the {\tt NEUTRAL} move is returned, instructing the character to continue in the same direction as before.  The tree is only reset if a move is made, allowing the agent to build on the previous simulations each game tick, increasing the deliberation time.
-
-\missingfigure{Component diagram}
 
 MCTS works by using simulated ``roll outs'' of game play.  To do this, the simulator class copies the game state and then repeatedly advances it using particular ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during simulated playouts.  As discussed in chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
 
 \section{Proposed additions to the agent}
 
 The idea behind this work is that if the ghost controller used during playouts could somehow learn to better emulate the observed behaviour of the actual opponent during gameplay, it could result in a better final score.  There are various ways that the ghost controller could learn, and these are discussed briefly below.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{diagrams/proposed}
+\caption[Structural overview]{Structural overview: to implement a Ms Pac-Man agent in the framework, a class extending {\tt Controller<MOVE>} must be created (and it must be called {\tt MyPacman} to be used in the competition).  The existing agent adopts a modular approach: the {\tt Parameters} class contains several fields which specify the behaviour of the algorithm, including one which specifies which ghost controller to use during playouts.  Ghost controllers extend the {\tt Controller<EnumMap<GHOST, MOVE>>} class: some of the example ghost controllers included in the framework are shown.  The proposed addition to the existing agent is a new ghost controller class.}
+\label{fig:proposed}
+\end{figure}
 
 \subsection{Classifying the ghost behaviour}
 

@@ -3,9 +3,16 @@
 
 
 \section{The Ms~Pac-Man environment}
+
 The original Pac-Man was an arcade game developed by Toru Iwatani, a Japanese games designer working for Namco Company, in 1980~\citep{Samothrakis2011}.  It became hugely successful due to its wide appeal and a number of spin-offs were created.  One of these was Ms~Pac-Man, which was initially created unofficially before being sold to Midway Games, who distributed Namco games in North America.
 
 The original game features a pizza-shaped protagonist ``Pac-Man'' which the player must direct around a maze consuming ``pills'' and occasionally fruit when it becomes available, whilst avoiding the four ghosts (``Pinky'', ``Inky'', ``Blinky'' and ``Clyde'') which attempt to eat Pac-Man.  If they succeed, Pac-Man loses a life.  There are four ``power pills'' in the maze: if Pac-Man eats one, all the ghosts turn blue and become edible.  Eating as many ghosts as possible in this state confers a significant advantage, as not only is the player rewarded with a number of points upon eating a ghost, the number of points on offer for a ghost doubles with each one eaten.  Starting at 200 for the first ghost, it increases to 400, 800, and 1600 for each consecutive ghost eaten whilst the same power pill is still active.  Thus, the total score available from a power pill is 3050 (50 for the power pill itself, and the sum of the scores mentioned above)---this is in contrast to only 10 points for each regular pill consumed.  Once all the pills in a maze have been cleared, the next level is reached.  Ghosts stay edible for decreasing amounts of time in each subsequent level, making it harder both to score points and to stay alive.
+
+\begin{wrapfigure}{l}{0.4\textwidth}
+\includegraphics[width=\linewidth]{diagrams/pac-man}
+\caption[The Ms Pac-Man game]{The Ms Pac-Man game: Ms Pac-Man is the yellow character, and is the one that the user controls.}
+\label{fig:pac-man}
+\end{wrapfigure}
 
 The original Pac-Man featured deterministic ghost behaviour and so it is possible to exploit known patterns of behaviour to learn how to play a given level in such a way that the maximum score for that level is always achieved.  However, Ms~Pac-Man features more sophisticated ghost behaviour which involves a level of non-determinism, making it much more difficult to play.  The other notable difference between the two games is that the latter has four levels instead of just one; there are other minor cosmetic differences such as the renaming of the orange ghost previously known as ``Clyde'' to ``Sue'', and the addition of a red bow and lipstick to the Pac-Man character.
 
@@ -44,10 +51,11 @@ The Scrabble player \emph{Maven} was one of the first players to make use of sim
 
 \subsection{The Monte Carlo tree search algorithm}
 
-\begin{figure}
+\begin{wrapfigure}{r}{0.6\textwidth}
+\includegraphics[width=\linewidth]{diagrams/mcts}
+\caption[The steps of Monte Carlo tree search]{The steps of Monte Carlo tree search \cite{Chaslot2008}. \todo[inline]{Fix MCTS diagram.}}
 \label{fig:MCTS}
-\missingfigure{MCTS diagram (Chaslot maybe)}
-\end{figure}
+\end{wrapfigure}
 
 Monte Carlo tree search (MCTS) is a best-first search technique in which many simulated games are run in order to build a tree of possible game states~\citep{Chaslot2008}.  Each node in the tree represents a game state after taking a given action, represented by the edge from the previous state to the new state.  The algorithm has the following four phases (illustrated in figure \ref{fig:MCTS}):
 
