@@ -1,7 +1,7 @@
 \chapter{Problem description}
 \label{ch:problem}
 
-\section{The current agent}
+\section{The existing agent}
 
 The Ms Pac-Man vs Ghosts framework provides the base implementation of the game for this project: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must extend {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Pac-Man, while ghost controllers extend {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
 
@@ -51,3 +51,50 @@ This discussion draws out a number of requirements.  The addition to the existin
 Furthermore, the implementation must be fast if it is to be successful.  However, due to the time constraints on the project it may not be possible to implement some of the more advanced algorithms, so a competing requirement is that the implementation must also be reasonably straightforward.
 
 \todo[inline]{Relation to original submitted plan}
+
+\section{Sample ghost controllers}
+
+The Ms~Pac-Man framework used for this project includes several sample ghost controllers.  Although none of them are terribly sophisticated, they provide a basic understanding of the kind of strategies ghost controllers may employ, and are sufficiently different from each other so as to be useful in evaluating the Ms~Pac-Man agent.  They are described briefly below.
+
+\subsection{Legacy}
+
+The {\tt Legacy} controller is designed to be passingly similar to the real ghost AI in Ms~Pac-Man.  For three of the ghosts---namely Blinky, Pinky and Inky---the controller returns the next move which takes the ghost closer to Ms~Pac-Man using the path, Euclidian and Manhattan distance measures respectively.  For Sue, the controller returns a random distance.
+
+\subsection{Legacy2TheReckoning}
+
+The behaviour in this controller is the same for all ghosts:
+
+\begin{itemize}
+\item If the ghosts are all in close proximity, but not close to Ms~Pac-Man, they are each sent to their own assigned corner of the maze.
+\item If a ghost is edible, or Ms~Pac-Man is close to a power pill, the ghost runs away from Ms~Pac-Man.
+\item Otherwise, the ghosts' default behaviour is to chase Ms~Pac-Man.
+\end{itemize}
+
+It is more difficult to score points against this ghost controller than the previous as the ghosts retreat when edible, making it more difficult to eat them.  It can be seen that even with just this simple rule, if the {\tt Legacy} controller is used during playouts, but the {\tt Legacy2TheReckoning} controller is the actual opponent, the ghosts will be assumed to be travelling in precisely the opposite direction from their actual direction.
+
+The first rule doesn't change the outcome greatly, as the ghosts are generally only next to each other but not next to Ms~Pac-Man when they are exiting the pen.
+
+\subsection{AggressiveGhosts}
+
+Each ghost is instructed to chase Ms. Pac-Man with a certain probability, or execute a random move otherwise.  The framework version has a hard-coded probability of 1.0, so it was rewritten to allow the probability to be supplied in the constructor.
+
+\subsection{RandomGhosts}
+
+All ghosts play random moves with this controller.  Obviously, any attempt to learn a behaviour from this would not be terribly successful.
+
+\subsection{PansyGhosts}
+
+The ghosts in this controller run away from Ms~Pac-Man with a certain probability, and execute a random move otherwise.  Like the {\tt AggressiveGhosts} controller, the probability has been hard-coded to 1.0 in the framework, so the class was rewritten to accept the probability in its constructor.
+
+\subsection{StarterGhosts}
+
+This controller executes the same behaviour for each ghost:
+
+\begin{itemize}
+\item If a ghost is edible, or Ms~Pac-Man is next to a power pill, the ghost runs away from Ms~Pac-Man.
+\item Failing that, chase Ms~Pac-Man with a certain probability, hard-coded to 0.9 in the framework.
+\item Otherwise, chose a random move.
+\end{itemize}
+
+This is fairly similar to the {\tt Legacy2TheReckoning} controller, but with the addition of a random element, and without the dispersal tactic.
+
