@@ -12,7 +12,7 @@ public class Program
 	{
 		Parameters parameters = new Parameters();
 		parameters.ghostModel = new Legacy();
-		parameters.tasks = new GameTask[] { new GhostTeamLogger("LegacyExtraTargets") };
+		parameters.tasks = new GameTask[] { new GhostTeamLogger("Training") };
 		
 		Executor executor = new Executor();
 		executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);

@@ -9,10 +9,10 @@ public class Weights
 {
 	public static void main(String[] args)
 	{
-		loadGhost("weights/BLINKY.dat", "Blinky");
-		loadGhost("weights/PINKY.dat", "Pinky");
-		loadGhost("weights/INKY.dat", "Inky");
-		loadGhost("weights/SUE.dat", "Sue");
+		loadGhost("weights/Training-BLINKY.dat", "Blinky");
+		loadGhost("weights/Training-PINKY.dat", "Pinky");
+		loadGhost("weights/Training-INKY.dat", "Inky");
+		loadGhost("weights/Training-SUE.dat", "Sue");
 	}
 	
 	

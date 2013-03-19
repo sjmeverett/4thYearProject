@@ -21,7 +21,7 @@ public class GhostState
 	public MOVE avoidPacman;
 	public MOVE chasePacmanM, chasePacmanP, chasePacmanE;
 	
-	public double distanceToPacman;
+	public double distanceToPacman, distanceToPowerPill;
 	
 	public GhostState(Game game, GHOST ghost)
 	{
@@ -39,13 +39,23 @@ public class GhostState
 		int pacmanIndex = game.getPacmanCurrentNodeIndex();
 		MOVE lastMove = game.getGhostLastMoveMade(ghost);
 		
-		avoidPacman = game.getNextMoveAwayFromTarget(ghostIndex, pacmanIndex, lastMove, DM.MANHATTAN);
+		avoidPacman = game.getNextMoveAwayFromTarget(ghostIndex, pacmanIndex, lastMove, DM.PATH);
 		
 		chasePacmanM = game.getNextMoveTowardsTarget(ghostIndex, pacmanIndex, lastMove, DM.MANHATTAN);
 		chasePacmanP = game.getNextMoveTowardsTarget(ghostIndex, pacmanIndex, lastMove, DM.PATH);
 		chasePacmanE = game.getNextMoveTowardsTarget(ghostIndex, pacmanIndex, lastMove, DM.EUCLID);
 		
-		distanceToPacman = game.getDistance(ghostIndex, pacmanIndex, DM.MANHATTAN);
+		distanceToPacman = game.getDistance(ghostIndex, pacmanIndex, DM.PATH);
+
+        distanceToPowerPill = Integer.MAX_VALUE;
+
+        for (int i: game.getActivePowerPillsIndices())
+        {
+            double d = game.getDistance(pacmanIndex, i, DM.PATH);
+
+            if (d < distanceToPowerPill)
+                distanceToPowerPill = d;
+        }
 	}
 	
 	
@@ -65,22 +75,19 @@ public class GhostState
 			/* 8*/ (avoidPacman == MOVE.LEFT ? 1 : 0),
 			/* 9*/ (avoidPacman == MOVE.RIGHT ? 1 : 0),
 			
-			/*10*/ (chasePacmanM == MOVE.UP ? 1 : 0),
-			/*11*/ (chasePacmanM == MOVE.DOWN ? 1 : 0),
-			/*12*/ (chasePacmanM == MOVE.LEFT ? 1 : 0),
-			/*13*/ (chasePacmanM == MOVE.RIGHT ? 1 : 0),
+			/*10*/ (chasePacmanP == MOVE.UP ? 1 : 0),
+			/*11*/ (chasePacmanP == MOVE.DOWN ? 1 : 0),
+			/*12*/ (chasePacmanP == MOVE.LEFT ? 1 : 0),
+			/*13*/ (chasePacmanP == MOVE.RIGHT ? 1 : 0),
 			
-			/*14*/ (chasePacmanP == MOVE.UP ? 1 : 0),
-			/*15*/ (chasePacmanP == MOVE.DOWN ? 1 : 0),
-			/*16*/ (chasePacmanP == MOVE.LEFT ? 1 : 0),
-			/*17*/ (chasePacmanP == MOVE.RIGHT ? 1 : 0),
+			/*14*/ (chasePacmanE == MOVE.UP ? 1 : 0),
+			/*15*/ (chasePacmanE == MOVE.DOWN ? 1 : 0),
+			/*16*/ (chasePacmanE == MOVE.LEFT ? 1 : 0),
+			/*17*/ (chasePacmanE == MOVE.RIGHT ? 1 : 0),
 			
-			/*18*/ (chasePacmanE == MOVE.UP ? 1 : 0),
-			/*19*/ (chasePacmanE == MOVE.DOWN ? 1 : 0),
-			/*20*/ (chasePacmanE == MOVE.LEFT ? 1 : 0),
-			/*21*/ (chasePacmanE == MOVE.RIGHT ? 1 : 0),
-			
-			/*22*/ distanceToPacman / 100
+			/*18*/ distanceToPacman / 100,
+
+            /*19*/ (distanceToPowerPill > 100) ? 1 : distanceToPowerPill / 100
 		};
 	}
 	
