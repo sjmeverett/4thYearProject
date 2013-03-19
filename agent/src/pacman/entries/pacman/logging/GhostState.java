@@ -7,7 +7,7 @@ import pacman.game.Game;
 
 public class GhostState
 {
-	public static final int FEATURE_COUNT = 14;
+	public static final int FEATURE_COUNT = 19;
 	
 	public GHOST ghost;
 	public boolean requiresAction;
