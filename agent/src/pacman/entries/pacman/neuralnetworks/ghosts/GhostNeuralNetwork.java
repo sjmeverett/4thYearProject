@@ -22,7 +22,6 @@ public class GhostNeuralNetwork
 	private MoveSelectionStrategy selectionStrategy;
 	
 	private double[] x, y;
-	private int i;
 	
 	/**
 	 * Constructor.
