@@ -13,7 +13,9 @@
 % http://tex.stackexchange.com/questions/9445/urls-break-compilation
 \renewcommand{\harvardurl}[1]{\textbf{URL:} \url{#1}}
 
-\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{tikz}
 \usepackage{todonotes}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -34,15 +36,15 @@
 
 \include{intro}
 \include{related}
-\include{spec}
+\include{problem}
 \include{design}
+\include{implementation}
 \include{verification}
 \include{results}
 \include{summary}
 
 \bibliography{thesis}
 
-\include{detailedspec}
 \include{testing}
 \include{userguide}
 
