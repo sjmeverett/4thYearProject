@@ -43,7 +43,7 @@ public class Weights
 	
 	public static void printArray(String name, double[] array)
 	{
-		System.out.println("\tpublic static double[] get" + name + "()\n{\n");
+		System.out.println("\tpublic static double[] get" + name + "()\n{");
 		System.out.println("\t\treturn new double[] { ");
 		
 		for (int i = 0; i < array.length; i++)
