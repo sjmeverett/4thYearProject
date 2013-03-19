@@ -17,6 +17,7 @@
 \usepackage{wrapfig}
 \usepackage{tikz}
 \usepackage{todonotes}
+\usepackage{listings}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
@@ -44,6 +45,9 @@
 \include{summary}
 
 \bibliography{thesis}
+
+\chapter{Server source listing}
+\lstinputlisting[language=php]{../server/server.php}
 
 \include{testing}
 \include{userguide}
