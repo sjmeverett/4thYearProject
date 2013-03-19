@@ -37,7 +37,7 @@ $app->get('/active_experiment', function () use ($db, $response) {
 /**
  * Saves a score to the specified experiment.
  */
-$app->post('/experiments/$id', function ($id) use ($db, $response) {
+$app->post('/experiments/:id', function ($id) use ($db, $response) {
     $score = intval(@file_get_contents('php://input'));
     
     $experiment = $db->experiments->findAndModify(
