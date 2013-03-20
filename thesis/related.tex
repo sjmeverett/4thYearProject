@@ -57,9 +57,9 @@ The Scrabble player \emph{Maven} was one of the first players to make use of sim
 
 \subsection{Algorithm}
 
-\begin{wrapfigure}{r}{0.6\textwidth}
+\begin{wrapfigure}{r}{0.4\textwidth}
 \includegraphics[width=\linewidth]{diagrams/mcts}
-\caption[Monte Carlo tree search algorithm]{Monte Carlo tree search algorithm \cite{Chaslot2008}. \todo[inline]{Fix MCTS diagram.}}
+\caption{Monte Carlo tree search algorithm}
 \label{fig:MCTS}
 \end{wrapfigure}
 
@@ -67,7 +67,7 @@ Monte Carlo tree search (MCTS) is a best-first search technique in which many si
 
 \textbf{Selection} ~Starting at the root node, the algorithm moves through the search tree by selecting a child of the current node according to some selection policy.  In order to avoid wasting time simulating games for poor moves, the policy must show a preference for choosing moves which have already demonstrated a good reward in previous simulations: this is known as \emph{exploitation}.  On the other hand, the policy must also choose nodes which have been sampled less, so that they may be further investigated: this is known as \emph{exploration}.  This \emph{exploitation versus exploration} dilemma is also seen in multi-armed bandit problems, for which various algorithms exist~\citep{Auer2002}.  The application of this type of algorithm to the selection phase of MCTS is what makes it useful over traditional Monte Carlo methods, as it dramatically decreases the search space.  The UCT algorithm~\citep{Kocsis2006} mentioned above is one of the most commonly-used algorithms for this.
 
-\textbf{Expansion} ~Once a leaf node is reached, it may be expanded.  Expanding a node only once a certain sample count has been reached can produce better results \todo{Expansion threshold citation}.  If the node is expanded, one of its children should be chosen as the new leaf node: this can be a random decision, as the algorithm has no other information.
+\textbf{Expansion} ~Once a leaf node is reached, it may be expanded.  Expanding a node only once a certain sample count has been reached can produce better results.  If the node is expanded, one of its children should be chosen as the new leaf node: this can be a random decision, as the algorithm has no other information.
 
 \textbf{Simulation} ~Also called \textbf{roll-out}, this phase involves running a simulated game from the game state represented by the leaf node arrived at.  In some of the earlier specifications of the algorithm, it was stated that the simulation should be continued until the end of the game~\citep{Chaslot2008}; however, it can also be run until some fixed point in the future, such as after a certain amount of moves.
 
@@ -81,14 +81,7 @@ As Ms Pac-Man has a high branching factor and is non-deterministic, MCTS is suit
 
 One of the earliest known studies into Ms~Pac-Man was conducted by \citet{Koza1992}, using genetic programming \todo{Add details from book. D006.31 KOZ}.
 
-\citet{Gallagher2003} created a simplified version of the game containing only regular pills and one ghost.  The agent has two states:
 
-\begin{itemize}
-\item The \emph{explore} state: Pac-Man is further than a predefined distance from the ghost.
-\item The \emph{retreat} state: Pac-Man is closer than the predefined distance to the ghost.
-\end{itemize}
-
-For each of the states, the agent has a set of parameterised probabilistic rules; the parameters are learned using the population-based incremental learning (PBIL) algorithm.  The agent was able to learn the parameters and showed some success, however the authors note that it may be unfeasible to scale their approach up to the full game.
 
 \todo[inline]{Finish related work section}
 
@@ -102,7 +95,7 @@ Clearly accurate domain knowledge improves the performance of the agent.  If the
 
 \subsection{Introduction}
 
-If an agent's performance on a given task improves as a result of observations made, it can be said to be learning \cite[p. 693]{RussellNorvig}.  It may not be clear why learning algorithms are needed; after all, surely the programmer should just program a system with the intended behaviour at the start.  However, this is not always possible.  For example, if one was to write a character recognition system, it would be impossible to foresee all of the possible slightly different forms a given character may take.  Furthermore, learning systems are good at responding to changes over time, that may not have been forseen by the original programmer.  Most importantly, sometimes it is impossible to imagine how to go about designing a particular algorithm---what would a face recognition algorithm look like?
+If an agent's performance on a given task improves as a result of observations made, it can be said to be learning \cite[p. 693]{RussellNorvig}.  It may not be clear why learning algorithms are needed; after all, surely the programmer should just program a system with the intended behaviour at the start.  However, this is not always possible.  For example, if one was to write a character recognition system, it would be impossible to foresee all of the possible slightly different forms a given character may take.  Furthermore, learning systems are good at responding to changes over time, that may not have been forseen by the original programmer.  Most importantly, sometimes it is impossible to imagine how to go about designing a particular algorithm---it is difficult to imagine how a manual face recognition algorithm might work for example.
 
 \subsection{Neural networks}
 
