@@ -66,12 +66,7 @@ public class Parameters
 	 * True if the tree is to be discarded when a decision is made. 
 	 */
 	public boolean discardTreeOnDecision;
-	
-	/**
-	 * Allows the set of parameters to be named for batches of experiments together.
-	 */
-	public String experimentName;
-	
+
 	/**
 	 * The ghost controller to play against.
 	 */
@@ -81,11 +76,6 @@ public class Parameters
 	 * The number of simulations to run, or -1 to run as many simulations as possible in real time.
 	 */
 	public int simulationCount;
-	
-	/**
-	 * True if the decision graph is to be shown.
-	 */
-	public boolean showGraph;
 	
 	/**
 	 * True if the positions of ghosts is to be taken into account.

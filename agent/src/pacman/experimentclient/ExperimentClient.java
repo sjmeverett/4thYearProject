@@ -66,6 +66,7 @@ public class ExperimentClient
 			scanner.close();
 			
 			NewExperiment experiment = new NewExperiment();
+            experiment.name = path.substring(path.indexOf("/") + 1);
 			experiment.scores = new int[0];
 			experiment.script = script;
 			experiment.count = count;
@@ -127,6 +128,7 @@ public class ExperimentClient
 	
 	public class NewExperiment
 	{
+        public String name;
 		public String script;
 		public int[] scores;
 		public int count;
