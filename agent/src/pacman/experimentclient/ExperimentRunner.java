@@ -75,8 +75,9 @@ public class ExperimentRunner
     		);
     	}
 
-        System.out.printf("Game over.  Score: %d | Level: %d | Level time: %d | Overall time: %d\n",
-                game.getScore(), game.getCurrentLevel(), game.getCurrentLevelTime(), game.getTotalTime());
+        System.out.printf("Game over.  Score: %d | Lives: %d | Level: %d | Level time: %d | Overall time: %d\n",
+                game.getScore(), game.getPacmanNumberOfLivesRemaining(), game.getCurrentLevel(),
+                game.getCurrentLevelTime(), game.getTotalTime());
 
 		return game.getScore();
 	}
