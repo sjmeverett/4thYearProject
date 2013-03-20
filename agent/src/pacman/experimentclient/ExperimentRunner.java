@@ -74,7 +74,10 @@ public class ExperimentRunner
     			parameters.opponent.getMove(game.copy(), System.currentTimeMillis() + DELAY)
     		);
     	}
-		
+
+        System.out.printf("Game over.  Score: %d | Level: %d | Level time: %d | Overall time: %d\n",
+                game.getScore(), game.getCurrentLevel(), game.getCurrentLevelTime(), game.getTotalTime());
+
 		return game.getScore();
 	}
 }
