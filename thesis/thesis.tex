@@ -17,6 +17,7 @@
 \usepackage{wrapfig}
 \usepackage{tikz}
 \usepackage{todonotes}
+\usepackage{mathtools}
 
 \usepackage{listings}
 \lstset{basicstyle=\footnotesize\ttfamily\singlespacing,frame=single}
@@ -26,6 +27,8 @@
 \titlespacing*{\chapter}{0pt}{50pt}{40pt}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\usepackage{epstopdf}
 
 \begin{document}
 \input{./title.tex}
@@ -59,6 +62,7 @@
 \lstinputlisting[language=PHP,caption={server/server.php}]{../server/server.php}
 
 \chapter{MATLAB neural network implementation}
+\label{ap:matlab}
 \lstinputlisting[language=Octave,caption={matlab/nntrain.m}]{../matlab/nntrain.m}
 \lstinputlisting[language=Octave,caption={matlab/sig.m}]{../matlab/sig.m}
 \lstinputlisting[language=Octave,caption={matlab/sigd.m}]{../matlab/sigd.m}

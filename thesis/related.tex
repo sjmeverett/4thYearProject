@@ -6,11 +6,12 @@
 
 \subsection{Overview}
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-\includegraphics[width=\linewidth]{diagrams/pac-man}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.4\textwidth]{diagrams/pac-man}
 \caption[The Ms Pac-Man game]{The Ms Pac-Man game: Ms Pac-Man is the yellow character, and is the one that the user controls.}
 \label{fig:pac-man}
-\end{wrapfigure}
+\end{figure}
 
 The original Pac-Man was an arcade game developed by Toru Iwatani, a Japanese games designer working for Namco Company, in 1980~\citep{Samothrakis2011}.  It became hugely successful due to its wide appeal and a number of spin-offs were created.  One of these was Ms~Pac-Man, which was initially created unofficially before being sold to Midway Games, who distributed Namco games in North America.
 
@@ -57,11 +58,12 @@ The Scrabble player \emph{Maven} was one of the first players to make use of sim
 
 \subsection{Algorithm}
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-\includegraphics[width=\linewidth]{diagrams/mcts}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\linewidth]{diagrams/mcts}
 \caption{Monte Carlo tree search algorithm}
 \label{fig:MCTS}
-\end{wrapfigure}
+\end{figure}
 
 Monte Carlo tree search (MCTS) is a best-first search technique in which many simulated games are run in order to build a tree of possible game states~\citep{Chaslot2008}.  Each node in the tree represents a game state after taking a given action, represented by the edge from the previous state to the new state.  The algorithm has the following four phases (illustrated in figure \ref{fig:MCTS}):
 
@@ -101,7 +103,14 @@ If an agent's performance on a given task improves as a result of observations m
 
 Neural networks are modelled after the nervous system in humans and animals.  This is composed of (in humans, many billions of) cells called \emph{neurons}.  A wide variety of morphologies exist, but the majority of neurons consist of the same three parts: the \emph{dendrites}, highly branched structures which receive chemical signals from other nearby neurons; the \emph{cell body}, which contains the processes necessary for cell function; and the \emph{axon}, containing a ``trigger zone'' which generates electrical signals over the length of the axon if the input to the dendrites reaches a certain threshold.  The axon has \emph{axon terminals} at the opposite end to the dendrites and cell body; these transmit chemical messengers into the dendrites of connected neurons in response to an electrical impulse.  Neurons can be seen as \emph{integrators} as their output is a function of the inputs received from the many connected neurons \cite[p. 152]{Vander}.
 
-Artificial neural networks also consist of large numbers of ``neurons''.  In general, these have a high-dimensional input vector and produce an output which is a non-linear \emph{activation} function (often a sigmoid function) of the input vector and some weights vector \cite[p. 1]{Annema1995}.  It can readily be appreciated how this is analogous to the biological system: the input vector represents the many incoming connections to the dendrites, while the ``trigger zone'' and axon terminals are represented by the activation function and its output.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.5\linewidth]{diagrams/neuron}
+\caption[An artificial neuron]{An artificial neuron.  The inputs are multiplied by weights ($\Theta_{0..3})$, summed, and then passed through an activation function to form the output of the neuron.}
+\label{fig:neuron}
+\end{figure}
+
+Artificial neural networks also consist of large numbers of ``neurons''.  In general, these have a high-dimensional input vector and produce an output which is a non-linear \emph{activation} function (often a sigmoid function) of the input vector multipled by some weights vector \cite[p. 1]{Annema1995}.  It can readily be appreciated how this is analogous to the biological system: the input vector represents the many incoming connections to the dendrites, while the ``trigger zone'' and axon terminals are represented by the activation function and its output.
 
 Each element of the input vector is multiplied by a corresponding element in the weights vector before being summed and used as the input to the activation function; thus, the weights vector controls how much each input affects the output of the neuron.  The weights are adjusted in a \emph{training phase}: by using a large number of training examples where the output expected of the neuron is known, the weights can be iteratively modified according to a learning rule which seeks to minimise the error between the actual output of the neuron and the expected output for each training example \cite[p. 1]{Annema1995}.  This is a form of \emph{supervised learning} \cite[p. 695]{RussellNorvig}.
 
