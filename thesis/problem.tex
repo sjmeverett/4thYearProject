@@ -12,11 +12,12 @@ The framework calls the {\tt getMove} method every 40~ms; if the method takes lo
 MCTS works by using simulated ``roll outs'' of game play.  To do this, the simulator class copies the game state and then repeatedly advances it using particular ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during simulated playouts.  As discussed in chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
 
 \section{Sample ghost controllers}
+\label{sec:sampleghosts}
 
 The Ms~Pac-Man framework used for this project includes several sample ghost controllers.  Although none of them are terribly sophisticated, they provide a basic understanding of the kind of strategies ghost controllers may employ, and are sufficiently different from each other so as to be useful in evaluating the Ms~Pac-Man agent.  They are described briefly below.
 
 \subsection{Legacy}
-
+\label{sec:legacy}
 The {\tt Legacy} controller is designed to be passingly similar to the real ghost AI in Ms~Pac-Man.  For three of the ghosts---namely Blinky, Pinky and Inky---the controller returns the next move which takes the ghost closer to Ms~Pac-Man using the path, Euclidian and Manhattan distance measures respectively.  For Sue, the controller returns a random distance.
 
 \subsection{Legacy2TheReckoning}

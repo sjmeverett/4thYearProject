@@ -88,6 +88,7 @@ An exploration of various optimisation algorithms was originally intended as par
 It was necessary to show that it is at least theoretically possible to learn ghost behaviour using neural networks.  First of all, a neural network was implemented in MATLAB; then data from a game was recorded; finally, this data was fed into the neural network implementation to determine if it could be learnt.  The various steps will be described further in the following sections.
 
 \subsection{Neural network implementation in MATLAB}
+\label{sec:matlab}
 
 MATLAB is a mathematical programming language developed by MathWorks.  Although commercial, it is available in many organisations and institutions.  There is also an open source equivalent called Octave: this was initially used, but it lacks several useful functions needed by the project.
 
@@ -123,7 +124,110 @@ A full listing of the function described in this section, as well as the listing
 
 \subsection{Logging ghost data}
 
-\subsection{Choosing the neural network parameters}
+In order to prove that the concept was feasible, it was necessary to record the kind of data available in a game to the ghost controller and run the neural network implementation on it to see if it could learn the behaviour.
+
+A class was created, namely {\tt GhostState}, to encapsulate the elements of the game state which matter to a particular ghost.  For example, inside a ghost controller class, the action of a given ghost may be dependent on the ghost's proximity to Ms~Pac-Man; or the next move to make in order to bring the ghost closer to Ms~Pac-Man; or perhaps whether the ghost is edible or not.  This information can be obtained by calling functions on the game state instance passed to the ghost and Ms~Pac-Man controller {\tt getMove} functions (described in section \ref{sec:existingagent}).
+
+A second class, {\tt GhostLogger}, was created to handle recording this ghost information to file. The class holds a reference to an instance of {\tt GhostState} and a {\tt BufferedWriter} which handles writing to the log file.  Every tick, the {\tt log} method on the class is called, which checks if the state information held for the previous tick indicates that the ghost had to make a decision: if it did, then that state information and the decision the ghost made (which is now available, the following tick) is written to the log file as a comma-separated list of floating-point values.  The features are scaled to between 0 and 1 (approximately) by dividing the feature by the the largest value (or a value close to it).  This is necessary to ensure that the network can be trained properly.  Directions (such as the move the ghost took, or the next move away from Ms~Pac-Man) are recorded as four values corresponding to up, down, left and right: a 1 is written in the place for the indicated direction, with the rest being 0.
+
+The ghost the logger is tracking will not make a decision every tick, so a line is only written to the file every few ticks.  Either way, the state the logger holds for the ghost is updated after checking the old state and possibly writing it out.
+
+The {\tt GhostTeamLogger} class was also created to hold references to four instances of {\tt GhostLogger}---one for each ghost---and abstract the details away.  The class implements the {\tt GameTask} interface, which allows it to be added to a list of classes to be invoked each game tick.
+
+The result of running the game with the {\tt GhostTeamLogger} registered as a game task is the creation of four comma-separated variable log files in the log directory, containing the decisions made by each of the four ghosts and the game state data that the decisions were based on.  This data can then be used as training examples for the neural network.
+
+\subsection{Results}
+\label{sec:conceptresults}
+
+For each ghost, a neural network was trained using the data in the associated log file, recorded using the methods described in the previous section.  The log files were produced by playing a game against the {\tt Legacy} controller (section \ref{sec:legacy}), and the features chosen to log were fairly arbitrarily chosen as: the level time, the edible score, the number of active power pills, the number of lives remaining for Ms~Pac-Man, the amount of time left for which the ghost will stay edible (or zero if this doesn't apply), the next move away from Ms~Pac-Man and the next move towards Ms~Pac-Man (both using the Manhattan distance measure), and the distance to Ms~Pac-Man from the ghost.  These features were all scaled to be approximately between 0 and 1.  For each of the ghosts Blinky, Pinky, Inky, and Sue, there were 886, 855, 811 and 808 training examples respectively.
+
+After training, each network was used to predict the data it was trained on, and a percentage error rate was obtained.  This was repeated ten times, and averaged for each ghost.  The results are presented in Table \ref{tab:proofconcept}, and give clear indication of learning.  Recall from Section \ref{sec:legacy} that the ghosts in the {\tt Legacy} controller choose the next move towards Ms~Pac-Man using different distance measures: Inky uses the Manhattan measure, which is the one used in the training data, so that could explain why the error rate is zero.  Also, Sue just uses random moves, which would explain why she has the highest error rate.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\toprule
+Ghost & Error rate (\%) \\
+\midrule
+Blinky & 10.44 \\
+Pinky & 24.48 \\
+Inky & 0 \\
+Sue & 38.61 \\
+\bottomrule
+\end{tabular}
+\caption{Error rates for predicting ghost behaviour}
+\label{tab:proofconcept}
+\end{table}
+
+Interestingly, although Blinky uses the Path distance measure and Pinky uses Euclidian (which is much closer to the available Manhattan data), it is the former which has the lower error rate.  Even so, that Inky should get a perfect score when supplied with the correct data is cause enough for the investigation in the following section.
+
+Note that the neural networks described above could suffer from \emph{over-fitting}, that is, being particularly good at fitting the training data, but unable to generalise well to new data.  To account for this, the data used as input to the neural network when evaluating the error rate should have been different to the training data.
+
+\subsection{Choosing the neural network features}
+
+The analysis in section \ref{sec:sampleghosts} was the main source of information used when picking the ghost state data to use as input to the neural networks for each ghost (neural network input is often called the \emph{features}).  However, due to the similarity between the Euclidian and Manhattan distance measures, some tests were run to determine if it was really necessary to include both.  The more features a neural network has, the bigger the matrices involved and hence the longer it takes to perform operations with, so it is advantageous to keep the number of features as low as possible.
+
+A game was recorded against the {\tt Legacy} ghost controller in a similar setup to the previous section, except that the next moves towards Ms~Pac-Man were included using all three distance measures.  The networks were then trained using some or all of this data as appropriate in a similar fashion to above.  Note that only the results for Blinky, Pinky and Inky are included, as Sue always returns random moves and bears no relation to the input.
+
+Table \ref{tab:alldm} shows the error rates achieved after training networks for the three ghosts using data which included the next moves towards Ms~Pac-Man using all three distance measures.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\toprule
+Ghost & Error rate (\%) \\
+\midrule
+Blinky & 7.67 \\
+Pinky & 0.39 \\
+Inky & 0.13 \\
+\midrule
+Overall average & 2.73 \\
+\bottomrule
+\end{tabular}
+\caption{Error rates when using all distance measures}
+\label{tab:alldm}
+\end{table}
+
+The training was repeated for the ghosts using the data from the same game, but with the Manhattan measure removed.  The results (Table \ref{tab:withoutmanhattan}) show the error rate for Inky---the ghost which uses the Manhattan distance measure---increasing from 0.13\% to 7.43\%; however, the overall average does not increase by a great deal.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\toprule
+Ghost & Error rate (\%) \\
+\midrule
+Blinky & 7.04 \\
+Pinky & 0.39 \\
+Inky & 7.43 \\
+\midrule
+Overall average & 4.95 \\
+\bottomrule
+\end{tabular}
+\caption{Error rates when the Manhattan distance measure is unavailable}
+\label{tab:withoutmanhattan}
+\end{table}
+
+As a result of this, the decision was made to include only the Path and Euclid distance measures.  In the example ghosts, only {\tt Legacy} uses something other than the Path measure, and it is assumed that competition controllers are more likely to mostly only use this measure as well as it is the most useful; the Euclid distance measure is sufficiently similar to make up for the missing Manhattan measure.  At this point, the distance between Ms~Pac-Man and her closest powerpill was also added as a feature.
+
 
 \subsection{Neural network implementation in Java}
+
+As introduced in section \ref{sec:matlab}, MATLAB makes it possible to perform operations on whole matrices at once.  A method to convert this easily into Java whilst still preserving much of the terseness of the original was sought, and as a result a Matrix class was written to represent matrices in Java\footnote{There are many good matrix libraries for Java, which were considered at the time---however, it was realised that this implementation would have to be heavily optimised for the specific task, which the third-party libraries did not deal with.  See section \ref{sec:efficiency} for more details on the optimisations made.}.  The neural network code using this matrix implementation (listing \ref{lst:javanet}) is appreciably similar the MATLAB implementation, within the constraints of the Java programming language.  This similarity is useful not only as it is easier to programme, but also easier to see that it is correct if it matches the working implementation.
+
+\begin{lstlisting}[language=Java,label=lst:javanet,caption={Java neural network code},captionpos=b]
+a1 = Utilities.appendVertical(1, x.part(j, j, 1, -1).transpose());
+a2 = Utilities.appendVertical(1, theta1.multiply(a1).apply(sig));
+a3 = theta2.multiply(a2).apply(sig);
+
+t = y.part(j, j, 1, -1).transpose();
+d3 = t.subtract(a3).elementMultiply(a3.apply(sigd));
+d2 = theta2.part(1, -1, 2, -1).transpose().multiply(d3)
+        .elementMultiply(a2.part(2, -1, 1, 1).apply(sigd));
+
+theta1 = theta1.add(d2.multiply(a1.transpose()).scale(learningRate));
+theta2 = theta2.add(d3.multiply(a2.transpose()).scale(learningRate));
+\end{lstlisting}
+
+This implementation was tested with the same test data used in section \ref{sec:conceptresults}, and the algorithm achieved similar results.  It did however run appreciably slower than the MATLAB implementation, a problem addressed in section \ref{sec:efficiency}.
+
 
