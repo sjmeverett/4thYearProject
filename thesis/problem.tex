@@ -2,6 +2,7 @@
 \label{ch:problem}
 
 \section{The existing agent}
+\label{sec:existingagent}
 
 The Ms Pac-Man vs Ghosts framework provides the base implementation of the game for this project: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must extend {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Pac-Man, while ghost controllers extend {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
 
