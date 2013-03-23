@@ -16,7 +16,8 @@ public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE
 	private Map<GHOST, GhostNeuralNetwork> networks;
 	private int iterations;
 
-	public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy, int iterations, boolean useLearnedWeights)
+
+	public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy, int iterations, boolean useLearnedWeights, boolean bulkTrain)
 	{
 		this.iterations = iterations;
 		
@@ -25,28 +26,31 @@ public class NeuralNetworkGhostController extends Controller<EnumMap<GHOST, MOVE
         if (useLearnedWeights)
         {
             networks.put(GHOST.BLINKY, new GhostNeuralNetwork(GHOST.BLINKY, selectionStrategy,
-                    LearnedWeights.getBlinkyTheta1(), LearnedWeights.getBlinkyTheta2()));
+                    LearnedWeights.getBlinkyTheta1(), LearnedWeights.getBlinkyTheta2(), bulkTrain));
 
             networks.put(GHOST.PINKY, new GhostNeuralNetwork(GHOST.PINKY, selectionStrategy,
-                    LearnedWeights.getPinkyTheta1(), LearnedWeights.getPinkyTheta2()));
+                    LearnedWeights.getPinkyTheta1(), LearnedWeights.getPinkyTheta2(), bulkTrain));
 
             networks.put(GHOST.INKY, new GhostNeuralNetwork(GHOST.INKY, selectionStrategy,
-                    LearnedWeights.getInkyTheta1(), LearnedWeights.getInkyTheta2()));
+                    LearnedWeights.getInkyTheta1(), LearnedWeights.getInkyTheta2(), bulkTrain));
 
             networks.put(GHOST.SUE, new GhostNeuralNetwork(GHOST.SUE, selectionStrategy,
-                    LearnedWeights.getSueTheta1(), LearnedWeights.getSueTheta2()));
+                    LearnedWeights.getSueTheta1(), LearnedWeights.getSueTheta2(), bulkTrain));
         }
         else
         {
-            networks.put(GHOST.BLINKY, new GhostNeuralNetwork(GHOST.BLINKY, selectionStrategy));
-
-            networks.put(GHOST.PINKY, new GhostNeuralNetwork(GHOST.PINKY, selectionStrategy));
-
-            networks.put(GHOST.INKY, new GhostNeuralNetwork(GHOST.INKY, selectionStrategy));
-
-            networks.put(GHOST.SUE, new GhostNeuralNetwork(GHOST.SUE, selectionStrategy));
+            networks.put(GHOST.BLINKY, new GhostNeuralNetwork(GHOST.BLINKY, selectionStrategy, bulkTrain));
+            networks.put(GHOST.PINKY, new GhostNeuralNetwork(GHOST.PINKY, selectionStrategy, bulkTrain));
+            networks.put(GHOST.INKY, new GhostNeuralNetwork(GHOST.INKY, selectionStrategy, bulkTrain));
+            networks.put(GHOST.SUE, new GhostNeuralNetwork(GHOST.SUE, selectionStrategy, bulkTrain));
         }
 	}
+
+
+    public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy, int iterations, boolean useLearnedWeights)
+    {
+        this(selectionStrategy, iterations, useLearnedWeights, false);
+    }
 
 
     public NeuralNetworkGhostController(MoveSelectionStrategy selectionStrategy, int iterations)

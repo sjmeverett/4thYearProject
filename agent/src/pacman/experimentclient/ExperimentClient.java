@@ -7,6 +7,9 @@ import java.util.Scanner;
 import javax.script.ScriptException;
 
 import com.google.gson.Gson;
+import pacman.Executor;
+import pacman.entries.pacman.MyPacMan;
+import pacman.entries.pacman.Parameters;
 
 public class ExperimentClient
 {
@@ -20,11 +23,17 @@ public class ExperimentClient
 		
 		if (args.length == 2)
 		{
+            System.out.printf("Uploading script: %s\n", args[0]);
 			client.uploadScript(args[0], Integer.parseInt(args[1]));
 		}
+        else if (args.length == 1)
+        {
+            System.out.printf("Running script: %s\n", args[0]);
+            client.run(args[0]);
+        }
 		else
 		{
-			
+            System.out.printf("Starting experiment client.\n");
 			client.run();
 		}
 	}
@@ -53,33 +62,52 @@ public class ExperimentClient
 			}
 		}
 	}
+
+
+    public void run(String path)
+    {
+        try
+        {
+            ExperimentRunner runner = new ExperimentRunner();
+            Executor executor = new Executor();
+
+            String script = readFile(path);
+            Parameters parameters = runner.loadParameters(script);
+
+            executor.runGame(new MyPacMan(parameters), parameters.opponent, true, 40);
+        }
+        catch (ScriptException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 	
 	
 	public void uploadScript(String path, int count)
 	{
 		try
 		{
-			Scanner scanner = new Scanner(new FileReader(path));
-			scanner.useDelimiter("\\A");
-			String script = scanner.hasNext() ? scanner.next() : "";
-			
-			scanner.close();
+			String script = readFile(path);
 
             //check script for errors
             ExperimentRunner runner = new ExperimentRunner();
             runner.loadParameters(script);
 			
-			NewExperiment experiment = new NewExperiment();
-            experiment.name = path.substring(path.indexOf("/") + 1);
-			experiment.scores = new int[0];
-			experiment.script = script;
-			experiment.count = count;
-
-			HttpClient client = new HttpClient();
-			Gson gson = new Gson();
-			String json = gson.toJson(experiment);
-
-			client.post(SAVE_URL, json);
+//			NewExperiment experiment = new NewExperiment();
+//            experiment.name = path.substring(path.indexOf("/") + 1);
+//			experiment.scores = new int[0];
+//			experiment.script = script;
+//			experiment.count = count;
+//
+//			HttpClient client = new HttpClient();
+//			Gson gson = new Gson();
+//			String json = gson.toJson(experiment);
+//
+//			client.post(SAVE_URL, json);
 		}
 		catch (IOException ex)
 		{
@@ -90,6 +118,18 @@ public class ExperimentClient
             System.out.println(ex.getMessage());
         }
 	}
+
+
+    private String readFile(String path) throws IOException
+    {
+        Scanner scanner = new Scanner(new FileReader(path));
+        scanner.useDelimiter("\\A");
+
+        String file = scanner.hasNext() ? scanner.next() : "";
+        scanner.close();
+
+        return file;
+    }
 	
 	
 	private Experiment getExperiment()
@@ -100,7 +140,7 @@ public class ExperimentClient
 			String json = client.get(EXPERIMENT_URL);
 			
 			Gson gson = new Gson();
-			Experiment experiment = (Experiment)gson.fromJson(json, Experiment.class);
+			Experiment experiment = gson.fromJson(json, Experiment.class);
 			return experiment;
 		}
 		catch (IOException ex)

@@ -18,6 +18,7 @@ public class PansyGhosts extends Controller<EnumMap<Constants.GHOST, Constants.M
     public PansyGhosts(double probability)
     {
         this.probability = probability;
+        random = new Random();
     }
 
 

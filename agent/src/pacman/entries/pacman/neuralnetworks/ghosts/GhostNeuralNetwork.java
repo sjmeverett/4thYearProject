@@ -20,6 +20,7 @@ public class GhostNeuralNetwork
 	private GHOST ghost;
 	private GhostState state;
 	private MoveSelectionStrategy selectionStrategy;
+    private boolean bulkTrain;
 	
 	private double[] x, y;
 	
@@ -27,27 +28,32 @@ public class GhostNeuralNetwork
 	 * Constructor.
 	 * @param ghost The ghost that this network is to represent.
 	 * @param selectionStrategy A strategy for selecting moves from network output.
+     * @param bulkTrain True if the ghost is to be trained only when a decision is made;
+     * otherwise, false to train every tick.
 	 */
-	public GhostNeuralNetwork(GHOST ghost, MoveSelectionStrategy selectionStrategy)
+	public GhostNeuralNetwork(GHOST ghost, MoveSelectionStrategy selectionStrategy, boolean bulkTrain)
 	{
 		network = new NeuralNetwork(GhostState.FEATURE_COUNT, HIDDEN_UNITS, 4);
 		this.ghost = ghost;
 		this.selectionStrategy = selectionStrategy;
+        this.bulkTrain = bulkTrain;
 	}
 	
 	
 	/**
-	 * Allows you to specify the initial weights.
+	 * Allows the initial weights to be specified.
 	 * @param ghost
 	 * @param selectionStrategy
 	 * @param theta1
 	 * @param theta2
+     * @param bulkTrain
 	 */
-	public GhostNeuralNetwork(GHOST ghost, MoveSelectionStrategy selectionStrategy, double[] theta1, double[] theta2)
+	public GhostNeuralNetwork(GHOST ghost, MoveSelectionStrategy selectionStrategy, double[] theta1, double[] theta2, boolean bulkTrain)
 	{
 		network = new NeuralNetwork(GhostState.FEATURE_COUNT, HIDDEN_UNITS, 4, theta1, theta2);
 		this.ghost = ghost;
 		this.selectionStrategy = selectionStrategy;
+        this.bulkTrain = bulkTrain;
 	}
 	
 	
@@ -61,9 +67,14 @@ public class GhostNeuralNetwork
 		{
 			x = state.toArray();
 			y = state.getDirection(game);
+
+            //train only here if bulkTrain is true
+            if (bulkTrain)
+                network.train(x, y, LEARNING_RATE, iterations);
 		}
-			
-		if (y != null)
+
+        //train every tick if bulkTrain is false
+		if (!bulkTrain && y != null)
 		{
 			network.train(x, y, LEARNING_RATE, iterations);
 		}
