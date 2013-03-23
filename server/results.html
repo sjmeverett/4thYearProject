@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Ms Pac-Man results</title>
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		
+		<style type="text/css">
+			body { font-family: sans-serif; }
+		</style>
+	</head>
+	
+	<body>
+		<script type="text/javascript">
+			$(function () {
+				$.get("http://www.stewartml.co.uk/pac-man/experiments",
+					function (data) {
+						var table = $('<table>');
+                        
+                        $('<tr>')
+                            .append(
+                                $('<td>')
+                                    .text('Name'),
+                                
+                                $('<td>')
+                                    .text('Score'),
+                                
+                                $('<td>')
+                                    .text('Type')
+                            )
+                            .appendTo(table);
+					
+						for (var id in data)
+						{
+							var experiment = data[id];
+                            var type = '';
+                            
+                            if (experiment.name.indexOf('nonlearning') > -1)
+                                type = 'nonlearning';
+                            else if (experiment.name.indexOf('max') > -1)
+                                type = 'max';
+                            else if (experiment.name.indexOf('roulette') > -1)
+                                type = 'roulette';
+							
+							for (var i = 0; i < experiment.scores.length; i++)
+							{
+								table.append(
+									$('<tr>')
+										.append(
+											$('<td>')
+												.text(experiment.name),
+											
+											$('<td>')
+												.text(experiment.scores[i]),
+                                            
+                                            $('<td>')
+                                                .text(type)
+										)
+								);
+							}
+						}
+						
+						$(document.body).append(table);
+					});
+			});
+		</script>
+	</body>
+</html>
