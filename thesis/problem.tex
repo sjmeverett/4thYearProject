@@ -1,16 +1,12 @@
 \chapter{Problem description}
 \label{ch:problem}
 
-\section{The existing agent}
-\label{sec:existingagent}
+\section{Overview}
 
-The Ms Pac-Man vs Ghosts framework provides the base implementation of the game for this project: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must extend {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Pac-Man, while ghost controllers extend {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
+As alluded to in section \ref{sec:previousagents}, when using MCTS for Ms~Pac-Man better final scores are achieved if the ghost controller used during simulated playouts matches the actual opponent controller: the aim of this project is to develop a ghost controller for use during Monte Carlo tree search playouts that is capable of learning its behaviour from observations of the actual opponent controller.  This ghost controller developed will be used by the existing MCTS agent developed by \citet{Me2012} for the Ms Pac-Man vs Ghosts framework.
 
-The framework calls the {\tt getMove} method every 40~ms; if the method takes longer than that time to run, its return value is discarded and the last move returned by the function is selected.  Thus, the method has a strict requirement on running time.
+So that the kind of behaviour the ghost controller will have to learn can be appreciated, there follows in the next section a brief discussion of the sample ghost controllers included in the framework.  Then, the existing agent is explored in some more detail, so that it can be explained how this project will fit into the existing work.  Section \ref{sec:proposedadditions} outlines the requirements for the project and gives an overview of possible solutions, and finally these requirements are related to the previously-submitted outline specification in section \ref{sec:relationoutlinespec}.
 
-\citet{Me2012} implemented an agent which used Monte Carlo tree search.  It makes use of a class called {\tt MonteCarloPacManSimulator} (henceforth referred to as the simulator class) which runs simulated games and builds a game tree representation using MCTS.  The agent repeatedly calls on the simulator class to run iterations of MCTS while there is still time remaining.  Once near the deadline, no more simulations are performed: if the agent is at a decision point, i.e., a junction, wall or power pill, the best move found by the MCTS is returned; otherwise, the {\tt NEUTRAL} move is returned, instructing the character to continue in the same direction as before.  The tree is only reset if a move is made, allowing the agent to build on the previous simulations each game tick, increasing the deliberation time.
-
-MCTS works by using simulated ``roll outs'' of game play.  To do this, the simulator class copies the game state and then repeatedly advances it using particular ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during simulated playouts.  As discussed in chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
 
 \section{Sample ghost controllers}
 \label{sec:sampleghosts}
@@ -59,8 +55,19 @@ This controller executes the same behaviour for each ghost:
 
 This is fairly similar to the {\tt Legacy2TheReckoning} controller, but with the addition of a random element, and without the dispersal tactic.
 
+\section{The existing agent}
+\label{sec:existingagent}
+
+The Ms Pac-Man vs Ghosts framework provides the base implementation of the Ms~Pac-Man game: to implement an agent, it is required to subclass the abstract generic class {\tt Controller} and implement the {\tt getMove} function.  The method takes one parameter, the game state, which it can query to make a decision on what move to make.  The return type of the method is specified by the generic type parameter of the class instance:  Pac-Man controllers must extend {\tt Controller{$\langle$}MOVE{$\rangle$}} as they need only return a single move for Ms~Pac-Man, while ghost controllers extend {\tt Controller{$\langle$}EnumMap{$\langle$}GHOST, MOVE{$\rangle\rangle$}}, as they must return a mapping of ghosts to moves.
+
+The framework calls the {\tt getMove} method every 40~ms; if the method takes longer than that time to run, its return value is discarded and the last move returned by the function is selected.  Thus, the method has a strict requirement on running time.
+
+\citet{Me2012} implemented an agent which used Monte Carlo tree search.  It makes use of a class called {\tt MonteCarloPacManSimulator} (henceforth referred to as the simulator class) which runs simulated games and builds a game tree representation using MCTS.  The agent repeatedly calls on the simulator class to run iterations of MCTS while there is still time remaining.  Once near the deadline, no more simulations are performed: if the agent is at a decision point, i.e., a junction, wall or power pill, the best move found by the MCTS is returned; otherwise, the {\tt NEUTRAL} move is returned, instructing the character to continue in the same direction as before.  The tree is only reset if a move is made, allowing the agent to build on the previous simulations each game tick, increasing the deliberation time.
+
+In order to perform the playouts in the MCTS algorithm, the simulator class copies the game state and then repeatedly advances it using particular ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during playouts.  As discussed in chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
 
 \section{Proposed additions to the agent}
+\label{sec:proposedadditions}
 
 The idea behind this work is that if the ghost controller used during playouts could somehow learn to better emulate the observed behaviour of the actual opponent during gameplay, it could result in a better final score.  There are various ways that the ghost controller could learn, and these are discussed briefly below.
 
@@ -80,7 +87,7 @@ One of the first approaches considered at the beginning of this project was to r
 
 \subsection{Neural networks}
 
-A neural network is capable of learning behaviour from observed examples, so this seemed like a logical avenue of exploration, and is the method chosen for this project.  Each game tick, the game state is recorded; the following tick, it is possible to retrieve the decisions made on that state for each of the ghosts which needed to make a decision.  This input and observed output is used to train the neural network.
+A neural network is capable of learning arbitrarily complex behaviour from observed examples, so this seemed like a logical avenue of exploration, and is the method chosen for this project.  Each game tick, the game state is recorded; the following tick, it is possible to retrieve the decisions made on that state for each of the ghosts which needed to make a decision.  This input and observed output is used to train the neural network.
 
 During playouts, the ghost controller uses a neural network for each ghost to decide what moves to return: it feeds as input the elements of game state used during training, and feeds this forward through the network.  Since the network has been trained on the observed behaviour of the opponent, the output of the network should in theory approximate the behaviour of the opponent.
 
@@ -98,6 +105,9 @@ This discussion draws out a number of requirements.  The addition to the existin
 \end{itemize}
 
 Furthermore, the implementation must be fast if it is to be successful.  However, due to the time constraints on the project it may not be possible to implement some of the more advanced algorithms, so a competing requirement is that the implementation must also be reasonably straightforward.
+
+\section{Relation to outline specification}
+\label{sec:relationoutlinespec}
 
 \todo[inline]{Relation to original submitted plan}
 
