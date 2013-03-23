@@ -1,1 +1,1 @@
-javac -cp PacManVsGhosts6.2.jar:gson-2.2.2.jar -sourcepath src -d bin src/pacman/experimentclient/ExperimentClient.java
+javac -cp PacManVsGhosts6.2.jar:gson-2.2.2.jar -sourcepath src -d bin src/pacman/experimentclient/ExperimentClient.java src/pacman/entries/pacman/neuralnetworks/ghosts/NeuralNetworkGhostController.java src/pacman/entries/pacman/neuralnetworks/moveselectionstrategies/MaxMoveSelectionStrategy.java src/pacman/entries/pacman/neuralnetworks/moveselectionstrategies/RouletteMoveSelectionStrategy.java src/pacman/controllers/examples/PansyGhosts.java
