@@ -37,24 +37,31 @@ public class ExperimentRunner
 	 */
 	public int run(String script) throws ScriptException
 	{
-		Parameters parameters = new Parameters();
-		engine.put("parameters", parameters);
-		
-		engine.eval(
-			"importPackage(Packages.pacman.entries.pacman);" +
-        	"importPackage(Packages.pacman.entries.pacman.evaluators);" +
-        	"importPackage(Packages.pacman.entries.pacman.evaluators.ensemble);" +
-        	"importPackage(Packages.pacman.entries.pacman.neuralnetworks);" +
-            "importPackage(Packages.pacman.entries.pacman.neuralnetworks.ghosts);" +
-        	"importPackage(Packages.pacman.entries.pacman.neuralnetworks.moveselectionstrategies);" +
-        	"importPackage(Packages.pacman.entries.pacman.selectionpolicies);" +
-        	"importPackage(Packages.pacman.controllers.examples);" +
-        	"with (parameters) { " +
-        	script +
-        	"}");
-		
+		Parameters parameters = loadParameters(script);
 		return run(parameters);
 	}
+
+
+    public Parameters loadParameters(String script) throws ScriptException
+    {
+        Parameters parameters = new Parameters();
+        engine.put("parameters", parameters);
+
+        engine.eval(
+            "importPackage(Packages.pacman.entries.pacman);" +
+            "importPackage(Packages.pacman.entries.pacman.evaluators);" +
+            "importPackage(Packages.pacman.entries.pacman.evaluators.ensemble);" +
+            "importPackage(Packages.pacman.entries.pacman.neuralnetworks);" +
+            "importPackage(Packages.pacman.entries.pacman.neuralnetworks.ghosts);" +
+            "importPackage(Packages.pacman.entries.pacman.neuralnetworks.moveselectionstrategies);" +
+            "importPackage(Packages.pacman.entries.pacman.selectionpolicies);" +
+            "importPackage(Packages.pacman.controllers.examples);" +
+            "with (parameters) { " +
+            script +
+            "}");
+
+        return parameters;
+    }
 	
 	/**
 	 * Runs a game using the specified parameters, and returns the score.

@@ -64,23 +64,31 @@ public class ExperimentClient
 			String script = scanner.hasNext() ? scanner.next() : "";
 			
 			scanner.close();
+
+            //check script for errors
+            ExperimentRunner runner = new ExperimentRunner();
+            runner.loadParameters(script);
 			
 			NewExperiment experiment = new NewExperiment();
             experiment.name = path.substring(path.indexOf("/") + 1);
 			experiment.scores = new int[0];
 			experiment.script = script;
 			experiment.count = count;
-			
+
 			HttpClient client = new HttpClient();
 			Gson gson = new Gson();
 			String json = gson.toJson(experiment);
-			
+
 			client.post(SAVE_URL, json);
 		}
 		catch (IOException ex)
 		{
 			ex.printStackTrace();
 		}
+        catch (ScriptException ex)
+        {
+            System.out.println(ex.getMessage());
+        }
 	}
 	
 	
