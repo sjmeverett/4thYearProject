@@ -7,62 +7,218 @@
 		
 		<style type="text/css">
 			body { font-family: sans-serif; }
+			h1 { cursor: pointer; }
 		</style>
 	</head>
 	
 	<body>
 		<script type="text/javascript">
+		    datasets = [
+                {
+                    title: 'Learning vs non-learning',
+                    columns: ['Type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['learning']
+                        },
+                        {
+                            regex: 'nonlearning-([a-z0-9]*).js',
+                            values: ['non-learning']
+                        }
+                    ]
+                },
+                
+                {
+                    title: 'Roulette vs max selection',
+                    columns: ['Selection type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['roulette']
+                        },
+                        {
+                            regex: 'learning-max-5-pretrained-([a-z0-9]*).js',
+                            values: ['max']
+                        }
+                    ]
+                },
+                
+                {
+                    title: 'Unbounded playout length vs 10 second maximum playout length',
+                    columns: ['Playout length', 'Type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'nonlearning-([a-z0-9]*).js',
+                            values: ['unbounded', 'non-learning']
+                        },
+                        {
+                            regex: 'nonlearning-([a-z0-9]*)-sr.js',
+                            values: ['max. 10 seconds', 'non-learning']
+                        },
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['unbounded', 'learning']
+                        },
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*)-sr.js',
+                            values: ['max. 10 seconds', 'learning']
+                        }
+                    ]
+                },
+                
+                {
+                    title: 'Non real time',
+                    columns: ['Type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'nonlearning-([a-z0-9]*)-nrt.js',
+                            values: ['non-learning']
+                        },
+                        {
+                            regex: 'learning-roulette-100-([a-z0-9]*)-nrt.js',
+                            values: ['learning']
+                        }                        
+                    ]
+                },
+                
+                {
+                    title: 'Trained vs not trained',
+                    columns: ['Type', 'Training', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['real time', 'trained']
+                        },
+                        {
+                            regex: 'learning-roulette-5-untrained-([a-z0-9]*).js',
+                            values: ['real time', 'not trained']
+                        },
+                        {
+                            regex: 'learning-roulette-100-([a-z0-9]*).js',
+                            values: ['non real time', 'trained']
+                        },
+                        {
+                            regex: 'learning-roulette-100-untrained-([a-z0-9]*).js',
+                            values: ['non real time', 'not trained']
+                        }
+                    ]
+                },
+                
+                {
+                    title: 'Effect of the number of iterations of training performed',
+                    columns: ['Iterations', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'learning-roulette-([0-9]*)-([a-z0-9]*)-nrt.js',
+                            values: []
+                        }
+                    ]
+                },
+                
+                {
+                    title: 'Learning controller vs RandomGhosts',
+                    columns: ['Type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'nonlearning-([a-z0-9]*)-random.js',
+                            values: ['nonlearning']
+                        },
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['learning']
+                        }
+                    ]
+                }
+		    ];
+		
+		
 			$(function () {
-				$.get("http://www.stewartml.co.uk/pac-man/experiments",
+				$.get("http://sml.stugo2.stugo.co.uk/pac-man/experiments",
 					function (data) {
-						var table = $('<table>');
-                        
-                        $('<tr>')
-                            .append(
-                                $('<td>')
-                                    .text('Name'),
-                                
-                                $('<td>')
-                                    .text('Score'),
-                                
-                                $('<td>')
-                                    .text('Type')
-                            )
-                            .appendTo(table);
-					
-						for (var id in data)
+						for (var i = 0; i < datasets.length; i++)
 						{
-							var experiment = data[id];
-                            var type = '';
-                            
-                            if (experiment.name.indexOf('nonlearning') > -1)
-                                type = 'nonlearning';
-                            else if (experiment.name.indexOf('max') > -1)
-                                type = 'max';
-                            else if (experiment.name.indexOf('roulette') > -1)
-                                type = 'roulette';
-							
-							for (var i = 0; i < experiment.scores.length; i++)
-							{
-								table.append(
-									$('<tr>')
-										.append(
-											$('<td>')
-												.text(experiment.name),
-											
-											$('<td>')
-												.text(experiment.scores[i]),
-                                            
-                                            $('<td>')
-                                                .text(type)
-										)
-								);
-							}
+						    $(document.body).append(makeTable(datasets[i], data));
 						}
 						
-						$(document.body).append(table);
+						$('table').hide();
+						$('h1').click(function ()
+						{
+						    var h1 = $(this);
+						    
+						    if (h1.data('expanded') == 'true')
+						    {
+						        $('table', h1.parent()).hide();
+						        h1.data('expanded', 'false');
+						    }
+						    else
+						    {
+						        $('table', h1.parent()).show();
+						        h1.data('expanded', 'true');
+						    }
+						});
 					});
 			});
+			
+			
+			function makeTable(dataset, data)
+			{
+			    //make table object and caption
+			    div = $('<div>');
+			    div.append($('<h1>').text(dataset.title));
+			    table = $('<table>').appendTo(div);
+			    
+			    //add columns
+			    thead = $('<thead>').appendTo(table);
+			    tr = $('<tr>').appendTo(thead);
+			    
+			    for (var i = 0; i < dataset.columns.length; i++)
+			    {
+			        tr.append($('<th>').text(dataset.columns[i]));
+			    }
+			    
+			    tr.append($('<th>').text('Score'));
+			    
+			    //add rows
+			    tbody = $('<tbody>').appendTo(table);
+			    
+			    for (var s = 0; s < dataset.sources.length; s++)
+			    {
+			        src = dataset.sources[s];
+			        regex = new RegExp(src.regex);
+			        
+			        for (var id in data)
+			        {
+			            experiment = data[id];
+			            matches = regex.exec(experiment.name);
+			            
+			            if (matches != null)
+			            {
+			                for (var i = 0; i < experiment.scores.length; i++)
+			                {
+			                    tr = $('<tr>').appendTo(tbody);
+			                    
+			                    //add the values specified by the source
+			                    for (var j = 0; j < src.values.length; j++)
+			                    {
+			                        tr.append($('<td>').text(src.values[j]));
+			                    }
+			                    
+			                    //add the captured values
+			                    for (var j = 1; j < matches.length; j++)
+			                    {
+			                        tr.append($('<td>').text(matches[j]));
+			                    }
+			                    
+			                    //add the score
+			                    tr.append($('<td>').text(experiment.scores[i]));
+			                }
+			            }
+			        }
+			    }
+			    
+			    return div;
+			}
 		</script>
 	</body>
 </html>
