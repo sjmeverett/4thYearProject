@@ -13,7 +13,7 @@ import pacman.entries.pacman.Parameters;
 
 public class ExperimentClient
 {
-	private static final String SERVER_URL = "http://www.stewartml.co.uk/pac-man/";
+	private static final String SERVER_URL = "http://sml.stugo2.stugo.co.uk/pac-man/";
 	private static final String EXPERIMENT_URL = SERVER_URL + "active_experiment";
 	private static final String SAVE_URL = SERVER_URL + "experiments";
 	
@@ -97,17 +97,17 @@ public class ExperimentClient
             ExperimentRunner runner = new ExperimentRunner();
             runner.loadParameters(script);
 			
-//			NewExperiment experiment = new NewExperiment();
-//            experiment.name = path.substring(path.indexOf("/") + 1);
-//			experiment.scores = new int[0];
-//			experiment.script = script;
-//			experiment.count = count;
-//
-//			HttpClient client = new HttpClient();
-//			Gson gson = new Gson();
-//			String json = gson.toJson(experiment);
-//
-//			client.post(SAVE_URL, json);
+			NewExperiment experiment = new NewExperiment();
+            experiment.name = path.substring(path.indexOf("/") + 1);
+			experiment.scores = new int[0];
+			experiment.script = script;
+			experiment.count = count;
+
+			HttpClient client = new HttpClient();
+			Gson gson = new Gson();
+			String json = gson.toJson(experiment);
+
+			client.post(SAVE_URL, json);
 		}
 		catch (IOException ex)
 		{
