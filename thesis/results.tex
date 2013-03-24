@@ -45,11 +45,39 @@ anchor=north}}
     \addlegendentry{learning}
 \end{axis}
 \end{tikzpicture}
-\caption[Learning vs non-learning ghost controller]{Learning vs non-learning ghost controller: averaged over all sample opponents, there is a decrease in performance when using the learning controller, but taking the {\tt PansyGhosts} controller on its own reveals an increase in performance.  Both results are statistically significant ($p < 0.05$).}
+\caption[Learning vs non-learning ({\tt Legacy}) ghost controller]{Learning vs non-learning ({\tt Legacy}) ghost controller: averaged over all sample opponents, there is a decrease in performance when using the learning controller, but taking the {\tt PansyGhosts} controller on its own reveals an increase in performance.  Both results are statistically significant ($p < 0.05$).}
 \label{fig:results1}
 \end{figure}
 
-The results look at first glance disappointing, with the average over all 6 opponents being significantly lower when using the learning controller during playouts compared to using {\tt Legacy}; however, further investigation of the data revealed that performance against the {\tt PansyGhosts} controller showed a significant increase in performance as a result of using the learning controller.  Recall from section \ref{sec:sampleghosts} that the {\tt PansyGhosts} controller causes all of the ghosts to run away from Ms~Pac-Man always, whilst the {\tt Legacy} controller causes three of the ghosts to run towards Ms~Pac-Man always: it would seem sensible that {\tt Legacy} would be a bad model for {\tt PansyGhosts} and thus the ability to learn the opposite behaviour of the opponent has clearly benefited the agent.
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,-0.2)},
+anchor=north}}
+\begin{axis}[
+    symbolic x coords={non-learning,learning},
+    ylabel=Score,
+    ybar=5pt,
+    xtick=data,
+    ymin=0,
+    nodes near coords,
+    scaled y ticks=false,
+    axis lines*=left,
+    bar width=30pt,
+    enlarge x limits=0.5
+    ]
+    \addplot coordinates {
+       (non-learning,25965)
+       (learning,29053)
+    };
+\end{axis}
+\end{tikzpicture}
+\caption[Learning vs non-learning ({\tt RandomGhosts}) ghost controller]{Learning vs non-learning ({\tt RandomGhosts}) ghost controller: using the learning controller during rollouts shows slightly improved performance over using a random player, but not significantly so.}
+\label{fig:resultsrandom}
+\end{figure}
+
+The results look at first glance disappointing, with the average over all 6 opponents being significantly lower when using the learning controller during playouts compared to using {\tt Legacy}; however, further investigation of the data revealed that performance against the {\tt PansyGhosts} controller showed a significant increase in performance as a result of using the learning controller.  Recall from section \ref{sec:sampleghosts} that the {\tt PansyGhosts} controller causes all of the ghosts to run away from Ms~Pac-Man always, whilst the {\tt Legacy} controller causes three of the ghosts to run towards Ms~Pac-Man always: it would seem sensible that {\tt Legacy} would be a bad model for {\tt PansyGhosts} and thus the ability to learn the opposite behaviour of the opponent has clearly benefited the agent.  Figure \ref{fig:resultsrandom} shows that using the learning controller might be slightly better than using a random player, but the result is not statistically significant.
 
 It was conjectured that the reason for the lowered performance overall when using the learning controller is that time spent learning takes away from the time available to the MCTS algorithm, potentially leading to lower quality decisions.  Therefore the first experiment was repeated with the length of playouts (that is, the amount of \emph{game time} each playout is simulated for, not the length of time the simulation is run for) capped at 10 seconds, in the hope that the algorithm would be able to perform more playouts.  Figure \ref{fig:resultssr} shows that the learning controller still gives a decreased performance; in retrospect, the 10 second cap may still have been too high to really effect the outcome.
 
