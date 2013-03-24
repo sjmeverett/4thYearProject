@@ -87,7 +87,7 @@ An exploration of various optimisation algorithms was originally intended as par
 
 It was necessary to show that it is at least theoretically possible to learn ghost behaviour using neural networks.  First of all, a neural network was implemented in MATLAB; then data from a game was recorded; finally, this data was fed into the neural network implementation to determine if it could be learnt.  The various steps will be described further in the following sections.
 
-\subsection{Neural network implementation in MATLAB}
+\subsection{Vectorised neural network implementation in MATLAB}
 \label{sec:matlab}
 
 MATLAB is a mathematical programming language developed by MathWorks.  Although commercial, it is available in many organisations and institutions.  There is also an open source equivalent called Octave: this was initially used, but it lacks several useful functions needed by the project.
@@ -123,6 +123,7 @@ th2 = th2 + beta * d3 * a2';
 A full listing of the function described in this section, as well as the listings of the {\tt sig} and {\tt sigd} functions, can be found in appendix \ref{ap:matlab}.  This implementation was verified by ensuring that the network could learn various boolean functions from examples, such as OR, AND, and XOR.  The latter is a `hard' learning problem which can only be learned by multi-layer networks.
 
 \subsection{Logging ghost data}
+\label{sec:logging}
 
 In order to prove that the concept was feasible, it was necessary to record the kind of data available in a game to the ghost controller and run the neural network implementation on it to see if it could learn the behaviour.
 
@@ -229,5 +230,16 @@ theta2 = theta2.add(d3.multiply(a2.transpose()).scale(learningRate));
 \end{lstlisting}
 
 This implementation was tested with the same test data used in section \ref{sec:conceptresults}, and the algorithm achieved similar results.  It did however run appreciably slower than the MATLAB implementation, a problem addressed in section \ref{sec:efficiency}.
+
+\section{Alternative treatments}
+
+There are various other choices for algorithms to learn the opponent controller behaviour, which are summarised in the following sections.
+
+\subsection{Classifying the ghost behaviour}
+
+One of the first approaches considered at the beginning of this project was to record lots of game data using different opponent ghost controllers, and train a classification algorithm to recognise different kinds of ghost behaviour.  Then during gameplay, the agent could attempt to classify the behaviour observed to determine the known ghost controller which best matches this behaviour, and use this as the controller during playouts.  This has the advantage that a simple classification algorithm, such as logistical regression, is reasonably straightforward to implement.  The downside is that possible opponents in the Ms Pac-Man vs Ghost competitions are extremely diverse, and may not match any of the `known' models.  It would have been interesting to further explore this method if time had available, and it remains a possible opportunity for future work.
+
+\subsection{Reinforcement learning}
+
 
 
