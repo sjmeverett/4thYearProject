@@ -121,10 +121,7 @@ Although the exact mechanism of learning in the brain is not fully understood, i
 
 The type of artificial neural network used in this work is the two-layer feed-forward network \cite[p. 4]{Aleksander1995}.  This consists of a layer of neurons called the \emph{hidden layer}, which computes some internal representation of the inputs \cite[p. 135]{Aleksander1995}, and a connected \emph{output layer}, which computes the final result of the neural network as a function of the output from the hidden layer.  The term ``feed-forward'' refers to the fact that the input is passed first to the hidden layer, and then fed forward to the output layer.  It has been shown that such a network is capable of approximating any function \cite[p. 10]{Annema1995}.
 
-\todo[inline]{Maybe add Kolmogrov's theorem (p. 10 of Annema) and comment from p. 135 of Aleksander et al}
-
 The use of a hidden layer introduces a problem---the expected output for the hidden layer is not known, and so some method must exist for propagating the errors from the output layer in order to train the weights in the hidden layer.  The algorithm used for this purpose in this work is the backpropagation algorithm \cite[pp. 134--149]{Aleksander1995}, which will be discussed in more detail in the implementation section.
-
 
 \section{Summary}
 
