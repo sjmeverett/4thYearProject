@@ -217,6 +217,38 @@ anchor=north}}
 \end{figure}
 
 
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\pgfplotsset{every axis legend/.append style={
+at={(0.5,-0.2)},
+anchor=north}}
+\begin{axis}[
+    symbolic x coords={Roulette, Max},
+    ylabel=Score,
+    ybar=35pt,
+    xtick=data,
+    ymin=0,
+    nodes near coords,
+    scaled y ticks=false,
+    axis lines*=left,
+    bar width=30pt,
+    enlarge x limits=0.2,
+    ]
+    \addplot coordinates {
+       (Roulette,29053)
+       (Max,27444)
+    };
+\end{axis}
+\end{tikzpicture}
+\caption[Roulette vs maximum move selection]{Roulette vs maximum move selection: using roulette selection is mariginally better than using maximum, but the result is not statistically significant.}
+\label{fig:resultsmax}
+\end{figure}
 
-Finally, a series of experiments were run in non-real-time mode to investigate the effect of changing the number of iterations each new observed training example was learned over.  20 games were played against each of the 6 opponents, for each of the following iteration counts: 20, 50, 100, 200 and 500.  In all cases, the number of iterations of MCTS run was 1000.  Figure \ref{fig:resultsiterations} shows the results: varying the number of iterations of training does not alter the average final score achieved.  This lends further evidence to the conjecture that the ghost behaviour is particularly trivial for the network to learn.
+
+A series of experiments were run in non-real-time mode to investigate the effect of changing the number of iterations each new observed training example was learned over.  20 games were played against each of the 6 opponents, for each of the following iteration counts: 20, 50, 100, 200 and 500.  In all cases, the number of iterations of MCTS run was 1000.  Figure \ref{fig:resultsiterations} shows the results: varying the number of iterations of training does not alter the average final score achieved.  This lends further evidence to the conjecture that the ghost behaviour is particularly trivial for the network to learn.
+
+A final experiment was run to investigate the effect of the move selection strategy.  Recall from section \ref{sec:structure} the two ways of selecting a move from the neural network output: all the experiments described so far have used the {\tt RouletteSelectionStrategy} class, which selects a move with a probability proportional to its respective output.  This seems like a good strategy since Monte Carlo tree search is a probabilistic algorithm, and it would presumably help the performance if even unlikely game states are explored from time to time in case they are realised.  This hypothesis was verified by running 20 games using the learning controller in playouts against each of the 6 ghost teams, once using roulette selection and once using maximum selection.  The results are shown in figure \ref{fig:resultsmax}: roulette selection does indeed appear to be slightly better than maximum selection, but again the result is not statistically significant.
+
+Lastly, a note on statistical significance.  Several of the results presented here are not statistically significant---the final scores obtained from the game for each experiment run have a high level of variance, as subtly different choices in each game can result in drastic differences in score, making it difficult to draw strong conclusions.  This could be ameliorated by running substantially more games, as 20 may not have been enough due to the high variance, but time constraints limited the total number of games that could be run.
 
