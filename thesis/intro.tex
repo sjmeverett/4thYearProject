@@ -1,4 +1,20 @@
 \chapter{Introduction}
 \label{ch:intro}
 
-The game of Ms Pac-Man provides a useful environment for evaluating algorithms for realtime decision-making.
+The game of Ms~Pac-Man provides a useful environment for evaluating algorithms for realtime decision-making.  Even though it has been a target for a reasonable amount of research, artificial agents are still nowhere near as good as humans, and sophisticated techniques have to be employed to achieve even reasonable success.  Ms~Pac-Man is a stochastic, dynamic, multi-agent, continuous environment---much like real life---which greatly complicates the task of writing an agent for it, but it has simple enough rules that it can be easily understood.
+
+This work builds on earlier work by the author and colleagues who created an agent utilising the technique of Monte Carlo tree search.  The agent determines its next move by simulating hundreds of games to gauge the effect of making the various moves available to it and picking the move which maximises its score.  It uses a model of the ghost behaviour during these simulated games---when the the model happens to match the actual opponent ghost team, the agent performs better than when the model does not match the opponent.
+
+The aim therefore of this project is to build a ghost controller to use during these simulated games that is capable of learning its behaviour by observing the opponent ghost team.  The method chosen to learn the behaviour is to employ neural networks.
+
+Chapter \ref{ch:related} discusses the background and related work to this project.  The first section describes the environment of the Ms~Pac-Man game, and then an overview of Monte Carlo tree search is given.  Relevant previous Ms~Pac-Man agents are summarised, and finally machine learning and neural networks are introduced.
+
+Chapter \ref{ch:problem} then outlines the problem description and elaborates on the context of the project, as well as giving an overview on how the problem will be tackled.  It then relates the project requirements to the original outline specification document.
+
+The specific neural network algorithms are covered in Chapter \ref{ch:design}.  A proof of concept undertaken is also described and alternative treatments of the problem are explored.
+
+Chapter \ref{ch:implementation} gives the full structure of the implementation and discusses the optimisations performed on the matrix code developed for the neural network implementation.
+
+A test server was developed in order to run many games in parallel so that the project could be evaulated much faster.  This is described in Chapter \ref{ch:verification}.
+
+The results are included in Chapter \ref{ch:results}, and finally the summary and conclusions are given in Chapter \ref{ch:summary}.

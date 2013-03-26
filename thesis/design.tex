@@ -233,13 +233,33 @@ This implementation was tested with the same test data used in section \ref{sec:
 
 \section{Alternative treatments}
 \label{sec:alternativetreatments}
+
 There are various other choices for algorithms to learn the opponent controller behaviour, which are summarised in the following sections.
 
 \subsection{Classifying the ghost behaviour}
 
-One of the first approaches considered at the beginning of this project was to record lots of game data using different opponent ghost controllers, and train a classification algorithm to recognise different kinds of ghost behaviour.  Then during gameplay, the agent could attempt to classify the behaviour observed to determine the known ghost controller which best matches this behaviour, and use this as the controller during playouts.  This has the advantage that a simple classification algorithm, such as logistical regression, is reasonably straightforward to implement.  The downside is that possible opponents in the Ms Pac-Man vs Ghost competitions are extremely diverse, and may not match any of the `known' models.  It would have been interesting to further explore this method if time had available, and it remains a possible opportunity for future work.
+One of the first approaches considered at the beginning of this project was to record lots of game data using different opponent ghost controllers, and train a classification algorithm to recognise different kinds of ghost behaviour.  Then during gameplay, the agent could attempt to classify the behaviour observed to determine the known ghost controller which best matches this behaviour, and use this as the controller during playouts.  This has the advantage that a simple classification algorithm, such as logistical regression \citep[p. 725]{RussellNorvig}, is reasonably straightforward to implement.  The downside is that possible opponents in the Ms Pac-Man vs Ghost competitions are extremely diverse, and may not match any of the `known' models.  It would have been interesting to further explore this method if time had been available, and it remains a possible opportunity for future work.
+
+\subsection{Learning decision trees}
+
+A decision tree is composed of a series of tests represented by nodes, and decision outputs represented by leaves.  This is a convenient representation as it is easy for humans to understand, and gives concise results for a wide variety of problems---however, it is not suitable for all functions \citep[pp. 698--699]{RussellNorvig}.
+
+The aim for a decision tree learning problem is for it to create a tree which is as small as possible while still being consistent with the training data.  Unfortunately, there is no way to efficiently search through all the possible trees, so heuristics can be used to find a good approximate.  A simple greedy algorithm works by recursively choosing the attribute that separates the data into sets which are as close as possible to the answer \citep[p. 703]{RussellNorvig}.
+
+Although the most simple of decision trees consist of attributes with a few discrete values, decision trees can also be used for attributes with continuous or integer values.  The algorithm would find the ``split point'' that separates the training examples best \citep[p. 707]{RussellNorvig}.  Figure \ref{fig:exampletree} shows an example decision tree roughly modelling the {\tt StarterGhosts} controller, without the random component.  The distance from Ms~Pac-Man to the nearest powerpill is a continuous-valued attribute, and the algorithm would have to find a split point.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\linewidth]{diagrams/decisiontree}
+\caption[An example decision tree]{An example decision tree: a possible decision tree is shown for the {\tt StarterGhosts} controller, ignoring the random aspect.}
+\label{fig:neuron}
+\end{figure}
+
+Note that the random aspect of the {\tt StarterGhosts} controller would likely throw a standard decision tree algorithm off.  It might be possible to modify the algorithm to work probabilistically however.
 
 \subsection{Reinforcement learning}
+
+In reinforcement learning, an agent is not given a large set of labelled examples as in previous methods.  Instead, it is given feedback after it has made a decision indicating whether it was a good or bad decision.  This technique is often used in domains which are overly complex and where providing large numbers of consistently labelled examples is unfeasible \citep[p. 831]{RussellNorvig}.  There are many algorithms which fall into this category, and investigation of this would constitute another whole project; reinforcement learning is often used for probabilistic games though and has been used in Ms~Pac-Man for Ms~Pac-Man agents such as in \citet{Szita2007}.
 
 
 

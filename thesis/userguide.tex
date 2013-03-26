@@ -1,4 +1,69 @@
 \chapter{User guide}
 \label{ch:userguide}
 
+\section{Introduction}
+
+The CD attached in appendix \ref{ap:listing} contains all the files used in this project.  The main directories are summarised below:
+
+\begin{itemize}
+\item {\tt agent} ~Java source for the project and most of the other useful files.
+\begin {itemize}
+\item {\tt src} ~Source code.
+\item {\tt scripts} ~All the experiment parameter scripts.
+\item {\tt logs} ~Output captured from the ghosts during games.
+\end {itemize}
+\item {\tt matlab} ~MATLAB implementation of the neural network and associated helper functions.
+\item {\tt server} ~The files for the experiment server.
+\item {\tt SimpleNeuralNetwork} ~Prototype implementation of neural network code.
+\end{itemize}
+
+The following sections will discuss the files in more detail.  It will be assumed that you are running in linux, unix or Mac---it is possible to run in Windows however.
+
+\section{Running the agent software}
+
+The agent files are located in the {\tt agent} directory.  A shell script is provided for building the agent: once in the agent directory, type {\tt ./build.sh} at the command line.  It can also be built in Eclipse.
+
+Another script has been provided to run the application.  It can be run with varying parameters for different effects, detailed below---but first a discussion on parameters scripts is warranted.
+
+\subsection{Parameters scripts}
+
+Parameters for the agent are specified in JavaScript files.  To run a game you have to first create a parameters script describing the parameters for the agent.  There are also a large number of scripts in the {\tt agent/scripts} directory.
+
+The script can set the following parameters:
+
+\begin{itemize}
+\item {\tt nodeExpansionThreshold} ~The number of times a node must be sampled in the MCTS algorithm before it is expanded: the default value is 30, and should generally be in the range 0--100.
+\item {\tt maximumSimulationLength} ~The maximum number of ticks to run simulations for: there are 25 ticks in a second, and the default value is 250, or 10 seconds.
+\item {\tt deathPenalty} ~The number of points the agent is penalised for dying during a rollout: the default is 10,000.
+\item {\tt completionReward} ~The number of points Ms~Pac-Man is awarded for finishing the level during a rollout: the default is 10,000.
+\item {\tt pacManModel} ~The model to use for Ms~Pac-Man during rollouts: the default is {\tt RandomNonRevPacMan} (note that this parameter requires an object, so you must instantiate the class by setting {\tt pacManModel = new RandomNonRevPacMan()}), other controllers included in the framework are {\tt NearestPillPacMan} and {\tt StarterPacMan}.
+\item {\tt ghostModel} ~The model to use for the ghosts during rollouts: the default is {\tt Legacy} and the framework also provides {\tt AggressiveGhosts}, {\tt Legacy2TheReckoning}, {\tt PansyGhosts}, {\tt RandomGhosts} and {\tt SimpleGhosts}.  There is of course also the {\tt NeuralNetworkGhostController} developed in this project.  The latter takes 4 parameters in its constructor: the {\tt MoveSelectionStrategy} to use (either {\tt MaxMoveSelectionStrategy} or {\tt RouletteMoveSelectionStrategy}), the number of iterations of training to run, whether or not to use preseed the networks with weights trained on {\tt Legacy} (true or false respectively), and whether or not to train only when a new example arrives or on continuously on whatever the last seen example was (true or false respectively).
+\item {\tt selectionPolicy} ~The selection policy to use during the selection phase of MCTS: the default is {\tt LevineUcbSelectionPolicy} with a tuning parameter of 4000.  This has been found to be optimal, so it is best to leave it with this default.
+\item {\tt discardTreeOnDecision} ~Whether or not to discard the MCTS tree and start afresh after a decision has been made: true or false respectively.
+\item {\tt opponent} ~The opponent to play against in the game: this can take the same values as the {\tt GhostModel} parameter, although it doesn't make much sense to put the learning model here.
+\item {\tt simulationCount} ~The number of iterations of MCTS to run: the default is -1, meaning run as many as possible in real time.  Switching this to a value greater than the number possible to run in the time constraints of the game will cause non-realtime behaviour, i.e., the agent may pause for a while at decision points.
+\item {\tt useGhostPositions} ~Whether or not to include ghost positions in the MCTS tree: true or false respectively (this is an experimental option).  When set to true, every other layer of nodes in the tree represent configurations of the ghost team encountered prior to Ms~Pac-Man making the next decision.  That is to say, the ghost team is modelled as a single player that is allowed to pick up their pieces and throw them down in an arbitrary location in a turn-based fashion.  The default is false.
+\item {\tt eatGhostNode} ~Only has any effect if the previous option is set to true, and causes the eating of a ghost to be considered a decision point; i.e., the agent is allowed to make a decision directly after eating a ghost.  The default is false.
+\item {\tt tasks} ~An array of tasks to run every tick: the default is null.  When using the learning controller, it has to be added to this list so that it can learn.  The {\tt GhostTeamLogger} class can also be instantiated (taking a string as a parameter to prefix the log file names with) and added to the list in order to log the opponent's decisions throughout the game.
+\item {\tt additionalEvaluators} ~An array of other tree evaluators to run before making decisions in the MCTS algorithm: see \cite{Me2012} for details.
+\end{itemize}
+
+\subsection{Running a game}
+
+To run a game with a specific set of parameters specified in a script, go to the agent directory and run {\tt ./run.sh thescript.js}, replacing the JavaScript file with the name of your parameters script.
+
+\subsection{Uploading scripts to the experiment serer}
+
+Running {\tt ./run.sh thescript.js 20} will upload {\tt thescript.js} to the experiment server and inform the server that it should be run 20 times.  The {\tt upload.sh} script is also provided: it takes as a parameter a wildcard path and will upload all the scripts matched and instruct the server to have them run 20 times each.
+
+\subsection{Running the experiment client}
+
+Running {\tt ./run.sh} with no parameters will start it in client mode, causing it to download new experiments from the server and run them until there are none left.
+
+
+\section{Running the server software}
+
+Your server should be setup with MongoDB and PHP, and the contents of the {\tt server} directory copied to the server (note that the supplied {\tt .htaccess} file will only work with Apache).  The constant in the {\tt ExperimentClient} class should be set to the URL of your server.  No setup is required for the database except ensuring that MongoDB and the PHP bindings for it are installed, as the database and collection will automatically be created.
+
+There is a {\tt results.html} file which can download the results from the server and format them as HTML tables for pasting into Excel or similar.
 

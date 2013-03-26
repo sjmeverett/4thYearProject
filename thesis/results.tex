@@ -11,38 +11,56 @@ The games were run over 12 identical computers having [such and such a processor
 
 \section{Results}
 
+\subsection{Learning vs non-learning controller}
+
 The first experiment aimed to assess broadly whether the learning ghost controller improved performance.  It was initially assumed that the agent would have poor performance if the learning controller started off with zero knowledge, so it was supplied with weights trained from data recorded in a game against the {\tt Legacy} controller.  Figure \ref{fig:results1} shows the average final scores obtained after playing 20 games using each of the six sample ghost controllers as opponents, first using {\tt Legacy} during playouts as a ``non-learning'' controller, and again using the learning controller.
 
 \begin{figure}
 \centering
 \begin{tikzpicture}
 \pgfplotsset{every axis legend/.append style={
-at={(0.5,-0.2)},
-anchor=north}}
+at={(0.5,1.05)},
+anchor=south}}
 \begin{axis}[
-    symbolic x coords={overall,pansy},
+    %symbolic x coords={non-learning, learning},
+    ybar = 5pt,
+    symbolic x coords={Overall, AggressiveGhosts, Legacy, Legacy2TheReckoning, PansyGhosts, RandomGhosts, StarterGhosts},
     ylabel=Score,
-    ybar=5pt,
     xtick=data,
     ymin=0,
-    nodes near coords,
+    nodes near coords=\rotatebox{90}{\pgfmathprintnumber\pgfplotspointmeta},
     scaled y ticks=false,
     axis lines*=left,
-    bar width=30pt,
-    enlarge x limits=0.5,
-    legend columns=4
+    bar width=25pt,
+    enlarge x limits=0.1,
+    legend columns=4,
+    width=\textwidth,
+    x tick label style={rotate=45, anchor=east}
     ]
+    
     \addplot coordinates {
-       (overall,35601)
-       (pansy,29159)
+       (Overall,35601)
+       (AggressiveGhosts,67644)
+       (Legacy,59512)
+       (Legacy2TheReckoning,16534)
+       (PansyGhosts,29159)
+       (RandomGhosts,28210)
+       (StarterGhosts,14609)
     };
     \addlegendentry{non-learning}
     
     \addplot coordinates {
-       (overall,29053)
-       (pansy,35885)
+       (Overall,29053)
+       (AggressiveGhosts,55334)
+       (Legacy,30759)
+       (Legacy2TheReckoning,12150)
+       (PansyGhosts,35885)
+       (RandomGhosts,26291)
+       (StarterGhosts,13901)
     };
     \addlegendentry{learning}
+    
+    
 \end{axis}
 \end{tikzpicture}
 \caption[Learning vs non-learning ({\tt Legacy}) ghost controller]{Learning vs non-learning ({\tt Legacy}) ghost controller: averaged over all sample opponents, there is a decrease in performance when using the learning controller, but taking the {\tt PansyGhosts} controller on its own reveals an increase in performance.  Both results are statistically significant ($p < 0.05$).}
@@ -79,6 +97,8 @@ anchor=north}}
 
 The results look at first glance disappointing, with the average over all 6 opponents being significantly lower when using the learning controller during playouts compared to using {\tt Legacy}; however, further investigation of the data revealed that performance against the {\tt PansyGhosts} controller showed a significant increase in performance as a result of using the learning controller.  Recall from section \ref{sec:sampleghosts} that the {\tt PansyGhosts} controller causes all of the ghosts to run away from Ms~Pac-Man always, whilst the {\tt Legacy} controller causes three of the ghosts to run towards Ms~Pac-Man always: it would seem sensible that {\tt Legacy} would be a bad model for {\tt PansyGhosts} and thus the ability to learn the opposite behaviour of the opponent has clearly benefited the agent.  Figure \ref{fig:resultsrandom} shows that using the learning controller might be slightly better than using a random player, but the result is not statistically significant.
 
+\subsection{Capping the rollout length}
+
 It was conjectured that the reason for the lowered performance overall when using the learning controller is that time spent learning takes away from the time available to the MCTS algorithm, potentially leading to lower quality decisions.  Therefore the first experiment was repeated with the length of playouts (that is, the amount of \emph{game time} each playout is simulated for, not the length of time the simulation is run for) capped at 10 seconds, in the hope that the algorithm would be able to perform more playouts.  Figure \ref{fig:resultssr} shows that the learning controller still gives a decreased performance; in retrospect, the 10 second cap may still have been too high to really effect the outcome.
 
 \begin{figure}
@@ -109,9 +129,9 @@ anchor=north}}
 \label{fig:resultssr}
 \end{figure}
 
-In order to properly exclude the possibility that the time spent learning decreases the quality of the MCTS results, the first experiment was repeated; instead of running in real-time however, every decision was given exactly 1000 iterations of MCTS and the ghost neural networks were trained for exactly 100 iterations on every ghost decision observed.  The results in figure \ref{fig:resultsrealtime} still show a decrease in overall performance when using the learning controller during playouts, but it is not a statistically significant difference.  The {\tt PansyGhosts} controller still shows a significant increase in performance.  It is not clear why the learning controller should not be at least as good as using {\tt Legacy} during playouts when the number of iterations of MCTS is fixed.
+\subsection{Non-real-time learning}
 
-The experiments described so far have used the learning controller initiated with weights trained from data recorded in a game against {\tt Legacy} (i.e., the controller should start off behaving like {\tt Legacy}).  This is because it was initially assumed that the agent would do really poorly to start off with until the ghost controller learned some behaviour, and that it may never get the chance to learn behaviour if the agent died early on as a result of poor decisions.  It was decided to verify this belief, and so 20 games were run against all 6 opponent controllers for each of the following four cases: real-time with and without pre-trained weights, and non-real-time with and without pre-trained weights.  The results are shown in figure \ref{fig:resultsuntrained}, and they are somewhat surprising: using pre-trained weights confers no advantage.  It is conjectured that the ghost behaviour is actually rather easy to learn, and that it does not take long for this to happen.
+In order to properly exclude the possibility that the time spent learning decreases the quality of the MCTS results, the first experiment was repeated; instead of running in real-time however, every decision was given exactly 1000 iterations of MCTS and the ghost neural networks were trained for exactly 100 iterations on every ghost decision observed.  The results in figure \ref{fig:resultsrealtime} still show a decrease in overall performance when using the learning controller during playouts, but it is not a statistically significant difference.  The {\tt PansyGhosts} controller still shows a significant increase in performance.  It is not clear why the learning controller should not be at least as good as using {\tt Legacy} during playouts when the number of iterations of MCTS is fixed.
 
 \begin{figure}
 \centering
@@ -149,6 +169,11 @@ anchor=north}}
 \label{fig:resultsrealtime}
 \end{figure}
 
+
+\subsection{The effect of seeding the neural network}
+
+The experiments described so far have used the learning controller initiated with weights trained from data recorded in a game against {\tt Legacy} (i.e., the controller should start off behaving like {\tt Legacy}).  This is because it was initially assumed that the agent would do really poorly to start off with until the ghost controller learned some behaviour, and that it may never get the chance to learn behaviour if the agent died early on as a result of poor decisions.  It was decided to verify this belief, and so 20 games were run against all 6 opponent controllers for each of the following four cases: real-time with and without pre-trained weights, and non-real-time with and without pre-trained weights.  The results are shown in figure \ref{fig:resultsuntrained}, and they are somewhat surprising: using pre-trained weights confers no advantage.  It is conjectured that the ghost behaviour is actually rather easy to learn, and that it does not take long for this to happen.
+
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -185,6 +210,9 @@ anchor=north}}
 \label{fig:resultsuntrained}
 \end{figure}
 
+
+\subsection{The effect of varying the number of training iterations}
+
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -192,9 +220,9 @@ anchor=north}}
 at={(0.5,-0.2)},
 anchor=north}}
 \begin{axis}[
-    symbolic x coords={20,50,100,200,500},
+    symbolic x coords={0,20,50,100,200,500},
     ylabel=Score,
-    ybar=35pt,
+    ybar=40pt,
     xtick=data,
     ymin=0,
     nodes near coords,
@@ -202,8 +230,10 @@ anchor=north}}
     axis lines*=left,
     bar width=30pt,
     enlarge x limits=0.2,
+    width=0.7\textwidth
     ]
     \addplot coordinates {
+       (0,27621)
        (20,34081)
        (50,34096)
        (100,34767)
@@ -212,10 +242,15 @@ anchor=north}}
     };
 \end{axis}
 \end{tikzpicture}
-\caption[The effect of varying the number of training iterations]{The effect of varying the number of training iterations: there is no significant difference between any of the values.}
+\caption[The effect of varying the number of training iterations]{The effect of varying the number of training iterations: there is no significant difference between any of the values, but 0 iterations gives noticeably lowered performance.}
 \label{fig:resultsiterations}
 \end{figure}
 
+
+A series of experiments were run in non-real-time mode to investigate the effect of changing the number of iterations each new observed training example was learned over.  20 games were played against each of the 6 opponents, for each of the following iteration counts: 0, 20, 50, 100, 200 and 500.  In all cases except the first, the number of iterations of MCTS run was 1000.  Figure \ref{fig:resultsiterations} shows the results: varying the number of iterations of training does not alter the average final score achieved.  This lends further evidence to the conjecture that the ghost behaviour is particularly trivial for the network to learn, but shows that something is being learned at the start.
+
+
+\subsection{The effect of move selection strategy}
 
 \begin{figure}
 \centering
@@ -233,7 +268,7 @@ anchor=north}}
     scaled y ticks=false,
     axis lines*=left,
     bar width=30pt,
-    enlarge x limits=0.2,
+    enlarge x limits=0.5,
     ]
     \addplot coordinates {
        (Roulette,29053)
@@ -245,10 +280,9 @@ anchor=north}}
 \label{fig:resultsmax}
 \end{figure}
 
-
-A series of experiments were run in non-real-time mode to investigate the effect of changing the number of iterations each new observed training example was learned over.  20 games were played against each of the 6 opponents, for each of the following iteration counts: 20, 50, 100, 200 and 500.  In all cases, the number of iterations of MCTS run was 1000.  Figure \ref{fig:resultsiterations} shows the results: varying the number of iterations of training does not alter the average final score achieved.  This lends further evidence to the conjecture that the ghost behaviour is particularly trivial for the network to learn.
-
 A final experiment was run to investigate the effect of the move selection strategy.  Recall from section \ref{sec:structure} the two ways of selecting a move from the neural network output: all the experiments described so far have used the {\tt RouletteSelectionStrategy} class, which selects a move with a probability proportional to its respective output.  This seems like a good strategy since Monte Carlo tree search is a probabilistic algorithm, and it would presumably help the performance if even unlikely game states are explored from time to time in case they are realised.  This hypothesis was verified by running 20 games using the learning controller in playouts against each of the 6 ghost teams, once using roulette selection and once using maximum selection.  The results are shown in figure \ref{fig:resultsmax}: roulette selection does indeed appear to be slightly better than maximum selection, but again the result is not statistically significant.
+
+\subsection{Statistical significance}
 
 Lastly, a note on statistical significance.  Several of the results presented here are not statistically significant---the final scores obtained from the game for each experiment run have a high level of variance, as subtly different choices in each game can result in drastic differences in score, making it difficult to draw strong conclusions.  This could be ameliorated by running substantially more games, as 20 may not have been enough due to the high variance, but time constraints limited the total number of games that could be run.
 
