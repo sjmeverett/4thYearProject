@@ -1,13 +1,13 @@
 <?php
 
-// Database setup ////////////////////////////////////
+// Database setup //////////////////////////////////////////////////////////////
 define('CONNECTION_STRING', 'mongodb://localhost');
 define('DATABASE', 'pacman_experiments');
 
 $connection = new Mongo(CONNECTION_STRING);
 $db = $connection->{DATABASE};
 
-// Slim routes etc. //////////////////////////////////
+// Slim routes etc. ////////////////////////////////////////////////////////////
 require 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
@@ -60,10 +60,16 @@ $app->post('/experiments', function () use ($db) {
 });
 
 
+$app->get('/experiments', function() use ($db) {
+    $experiments = $db->experiments->find();
+    jsonEncodeIterator($experiments);
+});
+
+
 $app->run();
 
 
-// Helper functions //////////////////////////////////
+// Helper functions ////////////////////////////////////////////////////////////
 
 function convertObjectId($entity)
 {
@@ -74,4 +80,9 @@ function convertObjectId($entity)
 function jsonEncodeEntity($entity)
 {
     echo json_encode(convertObjectId($entity));
+}
+
+function jsonEncodeIterator($iterator, $function='convertObjectId')
+{
+    echo json_encode(array_map($function, iterator_to_array($iterator)));
 }

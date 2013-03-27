@@ -129,6 +129,21 @@
                             values: ['learning']
                         }
                     ]
+                },
+                
+                {
+                    title: 'Learning vs pretrained with no learning',
+                    columns: ['Type', 'Opponent'],
+                    sources: [
+                        {
+                            regex: 'learning-roulette-5-pretrained-([a-z0-9]*).js',
+                            values: ['learning']
+                        },
+                        {
+                            regex: 'learning-roulette-0-pretrained-([a-z0-9]*).js',
+                            values: ['non-learning']
+                        }
+                    ]
                 }
 		    ];
 		
