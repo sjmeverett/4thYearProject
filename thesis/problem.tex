@@ -33,7 +33,7 @@ The first rule doesn't change the outcome greatly, as the ghosts are generally o
 
 \subsection{AggressiveGhosts}
 
-Each ghost is instructed to chase Ms. Pac-Man with a certain probability, or execute a random move otherwise.  The framework version has a hard-coded probability of 1.0, so it was rewritten to allow the probability to be supplied in the constructor.
+All ghosts are instructed to always chase Ms~Pac-Man.  This results in behaviour very similar to the {\tt Legacy} controller (without the non-deterministic aspect) and each is a reasonable model of the other.
 
 \subsection{RandomGhosts}
 
@@ -41,7 +41,7 @@ All ghosts play random moves with this controller.  Obviously, any attempt to le
 
 \subsection{PansyGhosts}
 
-The ghosts in this controller run away from Ms~Pac-Man with a certain probability, and execute a random move otherwise.  Like the {\tt AggressiveGhosts} controller, the probability has been hard-coded to 1.0 in the framework, so the class was rewritten to accept the probability in its constructor.
+The ghosts in this controller run away from Ms~Pac-Man with a certain probability, and execute a random move otherwise.  This is completely opposite to the {\tt Legacy} and {\tt AggressiveGhosts} controllers.
 
 \subsection{StarterGhosts}
 
@@ -62,9 +62,9 @@ The Ms Pac-Man vs Ghosts framework provides the base implementation of the Ms~Pa
 
 The framework calls the {\tt getMove} method every 40~ms; if the method takes longer than that time to run, its return value is discarded and the last move returned by the function is selected.  Thus, the method has a strict requirement on running time.
 
-\citet{Me2012} implemented an agent which used Monte Carlo tree search.  It makes use of a class called {\tt MonteCarloPacManSimulator} (henceforth referred to as the simulator class) which runs simulated games and builds a game tree representation using MCTS.  The agent repeatedly calls on the simulator class to run iterations of MCTS while there is still time remaining.  Once near the deadline, no more simulations are performed: if the agent is at a decision point, i.e., a junction, wall or power pill, the best move found by the MCTS is returned; otherwise, the {\tt NEUTRAL} move is returned, instructing the character to continue in the same direction as before.  The tree is only reset if a move is made, allowing the agent to build on the previous simulations each game tick, increasing the deliberation time.
+The agent this project builds on makes use of a class called {\tt MonteCarloPacManSimulator} (henceforth referred to as the ``simulator'' class) which runs simulated games and builds a game tree representation using MCTS.  The agent repeatedly calls on the simulator class to run iterations of MCTS while there is still time remaining.  Once near the deadline, no more simulations are performed: if the agent is at a decision point, i.e., a junction, wall or power pill, the best move found by MCTS is returned; otherwise, the {\tt NEUTRAL} move is returned, instructing the character to continue in the same direction as before.  The tree is only reset if a move is made, allowing the agent to build on the previous simulations each game tick, increasing the deliberation time.
 
-In order to perform the playouts in the MCTS algorithm, the simulator class copies the game state and then repeatedly advances it using particular ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during playouts.  As discussed in chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
+In order to perform the playouts in the MCTS algorithm, the simulator class copies the game state and then repeatedly advances it using specified ghost and Pac-Man controllers until some predefined point (e.g. loss of life, change of level, or after a certain amount of time has elapsed).  The agent was written using a highly modular approach, allowing different implementations to be supplied for various aspects, including the ghost controller to use during playouts.  As discussed in Chapter \ref{ch:related}, the final score achieved is an order of magnitude better when the ghost controller used during simulations matches the actual opponent.
 
 \section{Proposed additions to the agent}
 \label{sec:proposedadditions}
@@ -77,9 +77,9 @@ In order to perform the playouts in the MCTS algorithm, the simulator class copi
 
 A neural network is capable of learning arbitrarily complex behaviour from observed examples, so this seemed like a logical avenue of exploration, and is the method chosen for this project.  Each game tick, the game state is recorded; the following tick, it is possible to retrieve the decisions made on that state for each of the ghosts which needed to make a decision.  This input and observed output is used to train the neural network.
 
-During playouts, the ghost controller uses a neural network for each ghost to decide what moves to return: it feeds as input the elements of game state used during training, and feeds this forward through the network.  Since the network has been trained on the observed behaviour of the opponent, the output of the network should in theory approximate the behaviour of the opponent.
+During playouts, the ghost controller uses a neural network for each ghost to decide which moves to return: it takes as input the elements of game state used during training, and feeds this forward through the network.  Since the network has been trained on the observed behaviour of the opponent, the output of the network should in theory approximate the behaviour of the opponent.
 
-The advantage of this approach is that it should be able to approximate the behaviour of a wide variety of agents.  However, neural network algorithms can be expensive to compute---various optimisations are available but these are often very complex.  Obviously, time spent training the neural network is time that could otherwise be spent on MCTS simulations, so a balance must be maintained.  Furthermore, the agent used during the playouts must feed game state data through the neural networks for each ghost to get predicted moves every simulation tick: this is significantly slower than using a random player and further reduces the amount of simulations that can be run.  A further issue is that a ghost only makes 100-200 decisions in a typical game, and this might not be enough data to train the network particularly quickly.
+The advantage of this approach is that it should be able to approximate the behaviour of a wide variety of agents, depending on the inputs chosen.  However, neural network algorithms can be expensive to compute---various optimisations are available but these are often very complex.  Obviously, time spent training the neural network is time that could otherwise be spent on MCTS simulations, so a balance must be maintained.  Furthermore, the agent used during the playouts must feed game state data through the neural networks for each ghost to get predicted moves every simulation tick: this is significantly slower than using a random player and further reduces the amount of simulations that can be run.  A further issue is that a ghost only makes 100-200 decisions in a typical game, and this might not be enough data to train the network particularly quickly.
 
 Finally, at the start of the game before the networks have learnt anything, the ghost controller will effectively be random.  This is not a particularly good choice, and the agent may end up losing all its lives before getting a chance to learn anything.  However, a possible solution to this could be feeding the networks with weights learnt offline on an example controller, so that it is producing at least semi-sensible output even at the start of the game.
 
@@ -88,7 +88,7 @@ Finally, at the start of the game before the networks have learnt anything, the 
 This discussion draws out a number of requirements.  The addition to the existing agent must perform two functions:
 
 \begin{itemize}
-\item Implement a ghost controller which decides on moves player for each ghost, given a game state, using neural networks.
+\item Implement a ghost controller which decides on moves to play for each ghost, given a game state, using neural networks.
 \item Record the decisions of the opponent controller and the game states they were based on each game tick, and use this data to train the neural networks in the ghost controller.
 \end{itemize}
 
@@ -97,7 +97,7 @@ Furthermore, the implementation must be fast if it is to be successful.  However
 \section{Relation to outline specification}
 \label{sec:relationoutlinespec}
 
-Appendix \ref{ap:outlinespec} shows the original outline project specification.  Intially it was decided to write a classification algorithm to classify ghost behaviours into one of several known ghosts, or to attempt to pick values for a parameterised ghost team, and the outline specification is based on this plan.  These techniques are discussed further in section \ref{sec:alternativetreatments} as alternative treatments for the problem, but were dropped in favour of using neural networks.
+Appendix \ref{ap:outlinespec} shows the original outline project specification.  Intially it was decided to write a classification algorithm to classify ghost behaviours into one of several known ghosts, or to attempt to ``fit'' values for a parameterised ghost team, and the outline specification is based on this plan.  These techniques are discussed further in Section \ref{sec:alternativetreatments} as alternative treatments for the problem, but were dropped in favour of using neural networks.
 
 It was decided near the start of the project that using a classification algorithm would not be as flexible as using neural networks, which had not been investigated much at the time of writing the outline specification.  Although the particular type of machine learning referenced in the outline specification was not used, the aim has remained the same:
 
